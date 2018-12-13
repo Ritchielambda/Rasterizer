@@ -1,0 +1,38 @@
+﻿  Rasterizer.cpp
+d:\githubrepository\win32\win32\vector.h(14): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(6): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(7): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(8): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(63): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(66): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(78): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(81): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(235): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(237): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(237): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(243): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(269): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(270): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(281): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(282): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(340): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(341): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(342): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(343): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(363): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(364): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(367): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(368): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(371): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(372): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(375): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(376): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(379): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(380): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(381): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(384): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(385): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\githubrepository\win32\win32\rasterizer.cpp(386): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\win32\win32\grometry.h(10): warning C4172: 返回局部变量或临时变量的地址
+  Win32.vcxproj -> D:\GithubRepository\Win32\Debug\Win32.exe
+  Win32.vcxproj -> D:\GithubRepository\Win32\Debug\Win32.pdb (Full PDB)
