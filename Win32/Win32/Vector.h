@@ -33,11 +33,12 @@ public:
 public:
 	float Length();
 	QVector Normalize();
-	float dot(const QVector &rhs);
+	float dot(const QVector &rhs) const;
 	QVector Cross(const QVector& rhs)const; 
 	QVector operator+(const QVector & rhs)const;
 	QVector operator-(const QVector & rhs)const; //minus
 	QVector operator-()const;
 	QVector operator*(const Matrix & rhs)const;
+	QVector operator*(const float rhs)const;
 
 };

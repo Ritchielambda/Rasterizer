@@ -1,13 +1,8 @@
 #include"Rasterizer.h"
+
 using namespace MathInterface;
 Viewport Image::viewport(200,200,600,599);
-UINT ColorToUINT(ARGB color)
-{
-	BYTE red = 255 * color.r/*  color.w*/;
-	BYTE green = 255 * color.g/* color.w*/;
-	BYTE blue = 255 * color.b /* color.w*/;
-	return (UINT)((BYTE)blue | (WORD)((BYTE)green << 8) | (DWORD)((BYTE)red << 16));
-}
+
 Image::Image(HWND h, const size_t pwidth, const size_t pheight) :width(pwidth), height(pheight) 
 {
 	image = new UINT[pwidth*pheight];
@@ -233,7 +228,7 @@ ScanLine Image::generatescanline(Vertex vl, Vertex vr)
 {
 	float width = vr.m_Position.x - vl.m_Position.x;
 	int startX = vl.m_Position.x + 0.5;
-	Vertex step((vr.m_Position.x - vl.m_Position.x) / width, (vr.m_Position.y - vl.m_Position.y) / width, (vr.Color - vl.Color)/width);
+	Vertex step((vr.m_Position.x - vl.m_Position.x) / width, (vr.m_Position.y - vl.m_Position.y) / width,0,0 ,(vr.Color - vl.Color)/width);
 	return ScanLine(vl, step, width,startX, vl.m_Position.y+0.5);
 }
 void Image::drawScanline(Vertex vl, Vertex vr)

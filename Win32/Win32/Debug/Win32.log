@@ -1,38 +1,19 @@
-﻿  Rasterizer.cpp
-d:\githubrepository\win32\win32\vector.h(14): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(6): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(7): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(8): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(63): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(66): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(78): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(81): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(235): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(237): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(237): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(243): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(269): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(270): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(281): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(282): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(340): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(341): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(342): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(343): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(363): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(364): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(367): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(368): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(371): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(372): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(375): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(376): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(379): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(380): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(381): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(384): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(385): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
-d:\githubrepository\win32\win32\rasterizer.cpp(386): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-d:\githubrepository\win32\win32\grometry.h(10): warning C4172: 返回局部变量或临时变量的地址
-  Win32.vcxproj -> D:\GithubRepository\Win32\Debug\Win32.exe
-  Win32.vcxproj -> D:\GithubRepository\Win32\Debug\Win32.pdb (Full PDB)
+﻿  MathInterface.cpp
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(6): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(7): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(8): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(104): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(210): warning C4018: “<”: 有符号/无符号不匹配
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(211): warning C4018: “<”: 有符号/无符号不匹配
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipAlloc@4，该符号在函数 "public: static void * __cdecl Gdiplus::GdiplusBase::operator new(unsigned int)" (??2GdiplusBase@Gdiplus@@SAPAXI@Z) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipFree@4，该符号在函数 "public: static void __cdecl Gdiplus::GdiplusBase::operator delete(void *)" (??3GdiplusBase@Gdiplus@@SAXPAX@Z) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdiplusStartup@12，该符号在函数 "class Texture2D __cdecl MathInterface::LoadBitmapToColorArray(class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> >)" (?LoadBitmapToColorArray@MathInterface@@YA?AVTexture2D@@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@Z) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdiplusShutdown@4，该符号在函数 "class Texture2D __cdecl MathInterface::LoadBitmapToColorArray(class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> >)" (?LoadBitmapToColorArray@MathInterface@@YA?AVTexture2D@@V?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@Z) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipCloneImage@8，该符号在函数 "public: virtual class Gdiplus::Image * __thiscall Gdiplus::Image::Clone(void)" (?Clone@Image@Gdiplus@@UAEPAV12@XZ) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipDisposeImage@4，该符号在函数 "public: virtual __thiscall Gdiplus::Image::~Image(void)" (??1Image@Gdiplus@@UAE@XZ) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipGetImageWidth@8，该符号在函数 "public: unsigned int __thiscall Gdiplus::Image::GetWidth(void)" (?GetWidth@Image@Gdiplus@@QAEIXZ) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipGetImageHeight@8，该符号在函数 "public: unsigned int __thiscall Gdiplus::Image::GetHeight(void)" (?GetHeight@Image@Gdiplus@@QAEIXZ) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipCreateBitmapFromFile@8，该符号在函数 "public: __thiscall Gdiplus::Bitmap::Bitmap(wchar_t const *,int)" (??0Bitmap@Gdiplus@@QAE@PB_WH@Z) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipCreateBitmapFromFileICM@8，该符号在函数 "public: __thiscall Gdiplus::Bitmap::Bitmap(wchar_t const *,int)" (??0Bitmap@Gdiplus@@QAE@PB_WH@Z) 中被引用
+MathInterface.obj : error LNK2019: 无法解析的外部符号 _GdipBitmapGetPixel@16，该符号在函数 "public: enum Gdiplus::Status __thiscall Gdiplus::Bitmap::GetPixel(int,int,class Gdiplus::Color *)" (?GetPixel@Bitmap@Gdiplus@@QAE?AW4Status@2@HHPAVColor@2@@Z) 中被引用
+D:\GithubRepository\Rasterizer\Win32\Debug\Win32.exe : fatal error LNK1120: 11 个无法解析的外部命令

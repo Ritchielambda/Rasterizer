@@ -1,5 +1,13 @@
 #include"MathInterface.h"
+
 const float MathInterface::PI = 3.1415926f;
+UINT ColorToUINT(ARGB color)
+{
+	BYTE red = 255 * color.r/*  color.w*/;
+	BYTE green = 255 * color.g/* color.w*/;
+	BYTE blue = 255 * color.b /* color.w*/;
+	return (UINT)((BYTE)blue | (WORD)((BYTE)green << 8) | (DWORD)((BYTE)red << 16));
+}
 float MathInterface::Lerp(float&lhs, float&rhs, float factor)
 {
 	return float(lhs + (rhs - lhs)*factor);
@@ -12,7 +20,7 @@ FLOAT2 MathInterface::Lerp(FLOAT2&lhs, FLOAT2&rhs, float factor)
 Vertex MathInterface::Lerp(Vertex& lhs, Vertex & rhs, float factor)
 {
 	ARGB color = lhs.Color + (rhs.Color - lhs.Color)*factor;
-	return Vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor),(lhs.m_Position.y, rhs.m_Position.y, factor),color);
+	return Vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor),(lhs.m_Position.y, rhs.m_Position.y, factor), (lhs.m_Position.z, rhs.m_Position.z, factor), (lhs.m_Position.w, rhs.m_Position.w, factor),color);
 }
 FLOAT3 MathInterface::Lerp(FLOAT3&lhs, FLOAT3&rhs, float factor)
 {
@@ -93,7 +101,7 @@ Matrix MathInterface::MatrixAdj(const Matrix& mat)
 //逆矩阵 = 伴随矩阵/(行列式值的绝对值)
 Matrix MathInterface::MatrixInverse(const Matrix& mat)
 {
-	float det = abs(MatrixDet(mat));
+	float det = abs(static_cast<int>(MatrixDet(mat)));
 	Matrix adj = MatrixAdj(mat);
 	Matrix inverse;
 	for (int i = 0; i < 4; ++i)
@@ -103,4 +111,116 @@ Matrix MathInterface::MatrixInverse(const Matrix& mat)
 		}
 
 	return inverse;
+}
+Matrix MathInterface::MatrixScaling(float ScaleX, float ScaleY, float ScaleZ)
+{
+	return Matrix(
+		ScaleX, 0, 0, 0,
+		0, ScaleY, 0, 0,
+		0, 0, ScaleZ, 0,
+		0, 0, 0, 1
+	);
+}
+Matrix MathInterface::MatrixTranslate(float TransX, float TransY, float TransZ)
+{
+	return Matrix(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		TransX, TransY, TransZ, 1
+	);
+}
+Matrix MathInterface::MatrixRotationX(float angle)
+{
+	return Matrix(
+		1, 0, 0, 0,
+		0, cos(angle), sin(angle), 0,
+		0, -sin(angle), cos(angle), 0,
+		0, 0, 0, 1
+	);
+}
+Matrix MathInterface::MatrixRotationY(float angle)
+{
+	return Matrix(
+		cos(angle), 0, -sin(angle), 0,
+		0, 1, 0, 0,
+		sin(angle), 0, cos(angle), 0,
+		0, 0, 0, 1
+	);
+}
+Matrix MathInterface::MatrixRotationZ(float angle)
+{
+	return Matrix(
+		cos(angle), sin(angle), 0, 0,
+		-sin(angle), cos(angle), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+}
+Matrix MathInterface::MatrixLookAtLH(QVector eyePos, QVector lookAt, QVector up)
+{
+	QVector zaxis = lookAt - eyePos;
+	zaxis.Normalize();
+	QVector xaxis = up.Cross(zaxis).Normalize();
+	QVector yaxis = zaxis.Cross(xaxis);
+
+	return Matrix(
+		xaxis.x, yaxis.x, zaxis.x, 0,
+		xaxis.y, yaxis.y, zaxis.y, 0,
+		xaxis.z, yaxis.z, zaxis.z, 0,
+		-xaxis.dot(eyePos), -yaxis.dot(eyePos), -zaxis.dot(eyePos), 1
+	);
+}
+Matrix MathInterface::MatrixPerspectiveFovLH(float fovAngleY, float aspectRatio, float nearZ, float farZ)
+{
+	Matrix mat;
+	mat.SetZero();
+	// tan(fovAngleY*0.5f)
+	float height = cos(fovAngleY*0.5f) / sin(fovAngleY*0.5f);
+	mat._11 = height / aspectRatio;
+	mat._22 = height;
+	mat._33 = farZ / (farZ - nearZ);
+	mat._34 = 1.f;
+	mat._43 = (nearZ * farZ) / (nearZ - farZ);
+	return mat;
+}
+QVector MathInterface::Reflect(const QVector& I, const QVector& N)
+{
+	//公式 R = I - 2(I·N)N
+	float tmp = 2.f * I.dot(N);
+	return I - (N * tmp);
+}
+Texture2D MathInterface::LoadBitmapToColorArray(std::wstring filePath)
+{
+	Gdiplus::GdiplusStartupInput gdiplusstartupinput;
+	ULONG_PTR gdiplustoken;
+	Gdiplus::GdiplusStartup(&gdiplustoken, &gdiplusstartupinput, nullptr);
+
+	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(filePath.c_str());
+
+
+	{
+		UINT height = bmp->GetHeight();
+		UINT width = bmp->GetWidth();
+		//初始化Texture2D
+		Texture2D texture(width, height);
+
+		Gdiplus::Color color;
+
+		for (int y = 0; y < height; y++)
+			for (int x = 0; x < width; x++)
+			{
+				bmp->GetPixel(x, y, &color);
+
+				texture.m_pixelbuffer[x][height - 1 - y] = QVector(
+					color.GetRed() / 255.f,
+					color.GetGreen() / 255.f,
+					color.GetBlue() / 255.f,
+					1.f
+				);
+			}
+		delete bmp;
+		Gdiplus::GdiplusShutdown(gdiplustoken);
+		return texture;
+	}
 }

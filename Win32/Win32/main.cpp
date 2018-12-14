@@ -2,7 +2,6 @@
 //Include necessary Headers//
 #include <windows.h>
 #include"Rasterizer.h"
-
 //Define variables/constants//
 LPCTSTR WndClassName = L"firstwindow";	//Define our window class name
 HWND hwnd = NULL;	//Sets our windows handle to NULL
@@ -175,12 +174,18 @@ void drawpixeltest(Image a)
 			}
 		}
 	}*/
-	Vertex v1(0, 0, ARGB(0, 0, 1, 0));
-	Vertex v2(800, 600, ARGB(0, 0, 0, 1));
-	Vertex v3(600, 300, ARGB(0, 1, 0, 0));
+	/*Vertex v1(0, 0,0,0, ARGB(0, 0, 1, 0));
+	Vertex v2(800, 600, 0, 0, ARGB(0, 0, 0, 1));
+	Vertex v3(600, 300, 0, 0, ARGB(0, 1, 0, 0));*/
 	//a.drawtriangles(v1, v2, v3);
 	//a.drawlineBresenham(a.viewport.left, a.viewport.bottom, a.viewport.right, a.viewport.bottom, ARGB(0, 255, 0, 0));
-	a.LineClipping(v1, v2);
+	/*a.LineClipping(v1, v2);*/
+	Texture2D texture = MathInterface::LoadBitmapToColorArray(L"123.bmp");
+	for (int i = 0; i < texture.m_width; ++i)
+	{
+		for (int j = 0; j < texture.m_height; ++j)
+			a.setpixel(i, j, ARGB(texture.m_pixelbuffer[i][j].w, texture.m_pixelbuffer[i][j].x, texture.m_pixelbuffer[i][j].y, texture.m_pixelbuffer[i][j].z));
+	}
 	HDC hdc = GetDC(hwnd);
 	BitBlt(hdc, 0, 0, a.bm.bmWidth, a.bm.bmHeight, a.gethdc(),0, 0, SRCCOPY);
 	//StretchBlt(hdc, 0, 0, 200, 200, a.gethdc(), 0, 0, a.bm.bmWidth, a.bm.bmHeight, SRCCOPY);

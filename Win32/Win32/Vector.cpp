@@ -5,7 +5,7 @@ float QVector::Length()
 	len = static_cast<float>(sqrt(len));
 	return len;
 }
-float QVector::dot(const QVector&rhs)
+float QVector::dot(const QVector&rhs) const
 {
 	return (x*rhs.x + y*rhs.y + z*rhs.z+w*rhs.w);
 }
@@ -48,4 +48,13 @@ QVector QVector::operator*(const Matrix & rhs)const
 					x*rhs._12 + y*rhs._22 + z*rhs._32 + w*rhs._42,
 					x*rhs._13 + y*rhs._23 + z*rhs._33 + w*rhs._43,
 					x*rhs._14 + y*rhs._24 + z*rhs._34 + w*rhs._44);
+}
+QVector QVector::operator*(const float rhs)const
+{
+	return QVector(
+		x * rhs,
+		y * rhs,
+		z * rhs,
+		w
+	);
 }

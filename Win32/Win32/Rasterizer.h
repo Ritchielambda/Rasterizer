@@ -3,7 +3,6 @@
 #include<math.h>
 #include"Matrix.h"
 #include"Vector.h"
-#include"Grometry.h"
 #include"MathInterface.h"
 typedef int Outcode;
 const int INSIDE = 0; // 0000

@@ -76,18 +76,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Grometry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathInterface.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="QPShader.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
+    <ClCompile Include="QVShader.cpp" />
+    <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Grometry.h" />
     <ClInclude Include="MathInterface.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="QPShader.h" />
+    <ClInclude Include="QVShader.h" />
     <ClInclude Include="Rasterizer.h" />
+    <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
