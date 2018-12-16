@@ -1,20 +1,22 @@
 ﻿
 //Include necessary Headers//
 #include <windows.h>
-#include"Rasterizer.h"
+#include"QRender.h"
+#include"LoadBitmap.h"
+using namespace MathInterface;
 //Define variables/constants//
 LPCTSTR WndClassName = L"firstwindow";	//Define our window class name
 HWND hwnd = NULL;	//Sets our windows handle to NULL
-
 const int Width  = 800;	//window width
 const int Height = 600;	//window height
-Image a(hwnd, Width, Height);
+QRender render(hwnd, Width, Height);
+void InitializeRender();
 //Functions//
 bool InitializeWindow(HINSTANCE hInstance,	//Initialize our window
 		 int ShowWnd,
 		 int width, int height,
 		 bool windowed);
-void drawpixeltest(Image a);
+void drawpixeltest(Rasterizer a);
 int messageloop();	//Main part of the program
 
 LRESULT CALLBACK WndProc(HWND hWnd,	//Windows callback procedure
@@ -120,7 +122,7 @@ int messageloop(){	//The message loop
 
 		else{	//Otherewise, keep the flow going
 
-			drawpixeltest(a);
+			InitializeRender();
 		}
 		
 
@@ -159,7 +161,7 @@ switch( msg )	//Check message
 			 wParam,
 			 lParam);
 }
-void drawpixeltest(Image a)
+void drawpixeltest(Rasterizer a)
 {
 	//a.drawlineDDA(500, 400, 350, 350, ARGB(0,255, 0, 0));
 	//a.drawlineBresenham(0, 0, 500, 400, ARGB(0,255, 0, 0));
@@ -180,15 +182,97 @@ void drawpixeltest(Image a)
 	//a.drawtriangles(v1, v2, v3);
 	//a.drawlineBresenham(a.viewport.left, a.viewport.bottom, a.viewport.right, a.viewport.bottom, ARGB(0, 255, 0, 0));
 	/*a.LineClipping(v1, v2);*/
-	Texture2D texture = MathInterface::LoadBitmapToColorArray(L"123.bmp");
+	Texture2D texture = MathInterface::LoadBitmapToColorArray(L"2.bmp");
 	for (int i = 0; i < texture.m_width; ++i)
 	{
 		for (int j = 0; j < texture.m_height; ++j)
 			a.setpixel(i, j, ARGB(texture.m_pixelbuffer[i][j].w, texture.m_pixelbuffer[i][j].x, texture.m_pixelbuffer[i][j].y, texture.m_pixelbuffer[i][j].z));
 	}
-	HDC hdc = GetDC(hwnd);
-	BitBlt(hdc, 0, 0, a.bm.bmWidth, a.bm.bmHeight, a.gethdc(),0, 0, SRCCOPY);
+	
 	//StretchBlt(hdc, 0, 0, 200, 200, a.gethdc(), 0, 0, a.bm.bmWidth, a.bm.bmHeight, SRCCOPY);
 	
 }
 
+void InitializeRender()
+{
+	Vertex v[] =
+	{
+		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, ARGB(1.0f, 0.0f, 0.0f, 1.0f)),
+		Vertex(-1.0f, +1.0f, -1.0f,1.0f, ARGB(0.0f, 1.0f, 0.0f, 1.0f)),
+		Vertex(+1.0f, +1.0f, -1.0f, 1.0f, ARGB(0.0f, 0.0f, 1.0f, 1.0f)),
+		Vertex(+1.0f, -1.0f, -1.0f, 1.0f, ARGB(1.0f, 1.0f, 0.0f, 1.0f)),
+		Vertex(-1.0f, -1.0f, +1.0f, 1.0f, ARGB(0.0f, 1.0f, 1.0f, 1.0f)),
+		Vertex(-1.0f, +1.0f, +1.0f, 1.0f, ARGB(1.0f, 1.0f, 1.0f, 1.0f)),
+		Vertex(+1.0f, +1.0f, +1.0f, 1.0f, ARGB(1.0f, 0.0f, 1.0f, 1.0f)),
+		Vertex(+1.0f, -1.0f, +1.0f, 1.0f, ARGB(1.0f, 0.0f, 0.0f, 1.0f)),
+	};
+	int  indices1[] = {
+		//// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		 //back face
+		4, 6, 5,
+		4, 7, 6,
+
+		 //left face
+		4, 5, 1,
+		4, 1, 0,
+
+		 //right face
+		3, 2, 6,
+		3, 6, 7,
+
+		// top face
+		1, 5, 6,
+		1, 6, 2,
+
+		//// bottom face
+		4, 0, 3,
+		4, 3, 7
+	};
+	int  indices2[] = {
+		//// front face
+		//0, 1, 2,
+		//0, 2, 3,
+
+		// back face
+		//4, 6, 5,
+		//4, 7, 6,
+
+		// left face
+		//4, 5, 1,
+		//4, 1, 0,
+
+		// right face
+		//3, 2, 6,
+		//3, 6, 7,
+
+		//// top face
+		//1, 5, 6,
+		1, 6, 2,
+
+		//// bottom face
+		//4, 0, 3,
+		//4, 3, 7
+	};
+	render.SetVertexbuffer(8, v);
+	render.SetIndexbuffer(36, indices1);
+
+	Matrix world = MatrixIdentity();
+	Matrix rotate = MatrixRotationY(PI/4);
+	world = world*rotate;
+	Matrix View = MatrixLookAtLH(QVector(0.0f, 3.0f, -8.f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
+	Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
+	Matrix WVP = world*View*Projection;
+	render.SetWVP(WVP);
+	render.rasterizer->ClearZbuffer();
+	render.DrawIndexed();
+	//render.SetIndexbuffer(3, indices2);
+	//render.DrawIndexed();
+	render.Present();
+	
+	HDC hdc = GetDC(hwnd);
+
+	BitBlt(hdc, 0, 0, render.rasterizer->bm.bmWidth, render.rasterizer->bm.bmHeight, render.rasterizer->gethdc(), 0, 0, SRCCOPY);
+}

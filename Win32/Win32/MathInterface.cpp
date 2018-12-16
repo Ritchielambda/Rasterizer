@@ -19,8 +19,11 @@ FLOAT2 MathInterface::Lerp(FLOAT2&lhs, FLOAT2&rhs, float factor)
 }
 Vertex MathInterface::Lerp(Vertex& lhs, Vertex & rhs, float factor)
 {
-	ARGB color = lhs.Color + (rhs.Color - lhs.Color)*factor;
-	return Vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor),(lhs.m_Position.y, rhs.m_Position.y, factor), (lhs.m_Position.z, rhs.m_Position.z, factor), (lhs.m_Position.w, rhs.m_Position.w, factor),color);
+	ARGB color = lhs.Color+(rhs.Color - lhs.Color)*factor;
+
+ Vertex vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor), Lerp(lhs.m_Position.y, rhs.m_Position.y, factor), Lerp(lhs.m_Position.z, rhs.m_Position.z, factor), Lerp(lhs.m_Position.w, rhs.m_Position.w, factor),color);
+ vertex.Divz = lhs.Divz + (rhs.Divz - lhs.Divz)*factor;
+ return vertex;
 }
 FLOAT3 MathInterface::Lerp(FLOAT3&lhs, FLOAT3&rhs, float factor)
 {
@@ -190,37 +193,12 @@ QVector MathInterface::Reflect(const QVector& I, const QVector& N)
 	float tmp = 2.f * I.dot(N);
 	return I - (N * tmp);
 }
-Texture2D MathInterface::LoadBitmapToColorArray(std::wstring filePath)
+Matrix MathInterface::MatrixScreenTransform(int clientWidth, int clientHeight)
 {
-	Gdiplus::GdiplusStartupInput gdiplusstartupinput;
-	ULONG_PTR gdiplustoken;
-	Gdiplus::GdiplusStartup(&gdiplustoken, &gdiplusstartupinput, nullptr);
-
-	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(filePath.c_str());
-
-
-	{
-		UINT height = bmp->GetHeight();
-		UINT width = bmp->GetWidth();
-		//≥ı ºªØTexture2D
-		Texture2D texture(width, height);
-
-		Gdiplus::Color color;
-
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++)
-			{
-				bmp->GetPixel(x, y, &color);
-
-				texture.m_pixelbuffer[x][height - 1 - y] = QVector(
-					color.GetRed() / 255.f,
-					color.GetGreen() / 255.f,
-					color.GetBlue() / 255.f,
-					1.f
-				);
-			}
-		delete bmp;
-		Gdiplus::GdiplusShutdown(gdiplustoken);
-		return texture;
-	}
+	return Matrix(
+		clientWidth / 2, 0, 0, 0,
+		0, clientHeight / 2, 0, 0,
+		0, 0, 1, 0,
+		clientWidth / 2, clientHeight / 2, 0, 1
+	);
 }

@@ -30,12 +30,12 @@ public:
 	int x;
 	int y;
 };
-class Image
+class Rasterizer
 {
 public:
 
 	/*Public function*/
-	Image(HWND h, const size_t pwidth, const size_t pheight);
+	Rasterizer(HWND h, const size_t pwidth, const size_t pheight);
 	/*render*/
 	ARGB getpixel(int x, int y);
 	void setpixel(int x, int y, ARGB color);
@@ -45,9 +45,12 @@ public:
 	void drawScanline(Vertex vl, Vertex vr);
 	void drawflatButtomtriangles(Vertex v1, Vertex v2, Vertex v3);
 	void drawflatToptriangles(Vertex v1, Vertex v2, Vertex v3);
-	void drawtriangles(Vertex v1, Vertex v2, Vertex v3);
+	void drawtriangles(Vertex& v1, Vertex &v2, Vertex &v3);
 	void LineClipping(Vertex &v1, Vertex &v2);
 	void DrawRectangle();
+	float GetZvalue(int x, int y);
+	void SetZvalue(int x, int y, float value);
+	void ClearZbuffer();
 	//Assistant function
 	ScanLine generatescanline(Vertex vl, Vertex vr);
 	
@@ -58,7 +61,7 @@ public:
 	size_t getwidth() { return width; }
 	size_t getheight() { return height; }
 	HDC gethdc() { return m_hdc; }
-	~Image();
+	~Rasterizer();
 	
 
 	/*Public member*/
@@ -72,6 +75,7 @@ private:
 	size_t height;
 	HWND hwnd;
 	HDC m_hdc;
+	float ** Zbuffer;
 
 };
 

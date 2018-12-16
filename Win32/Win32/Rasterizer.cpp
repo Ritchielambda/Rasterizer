@@ -1,9 +1,9 @@
 #include"Rasterizer.h"
 
 using namespace MathInterface;
-Viewport Image::viewport(200,200,600,599);
+Viewport Rasterizer::viewport(200,200,600,599);
 
-Image::Image(HWND h, const size_t pwidth, const size_t pheight) :width(pwidth), height(pheight) 
+Rasterizer::Rasterizer(HWND h, const size_t pwidth, const size_t pheight) :width(pwidth), height(pheight) 
 {
 	image = new UINT[pwidth*pheight];
 	HDC hdc = GetDC(h);
@@ -15,6 +15,11 @@ Image::Image(HWND h, const size_t pwidth, const size_t pheight) :width(pwidth), 
 	bmphdr.biPlanes = 1;
 	bmphdr.biBitCount = 32;
 	bmphdr.biSizeImage = pheight * pwidth * 4;
+	Zbuffer = new float*[width];
+	for (int i = 0; i < width; ++i)
+	{
+		Zbuffer[i] = new float[height];
+	}
 	//创建后缓冲区
 	//先创建一个内存dc
 	//hdc = CreateCompatibleDC(nullptr);
@@ -30,18 +35,19 @@ Image::Image(HWND h, const size_t pwidth, const size_t pheight) :width(pwidth), 
 	ReleaseDC(h, hdc);
 	GetObject(m_bit_map, sizeof(BITMAP), &bm);
 }
-Image::~Image()
+Rasterizer::~Rasterizer()
 {}
-ARGB Image::getpixel(int x, int y)
+ARGB Rasterizer::getpixel(int x, int y)
 {
 	return ARGB(0,255, 0, 0);
 }
-void Image::setpixel(int x, int y, ARGB color)
+void Rasterizer::setpixel(int x, int y, ARGB color)
 {
+	if (x >= 0 && x < width && y >= 0 && y <height)
 	image[width*y + x] = ColorToUINT(color);
 }
 
-void Image::drawlineDDA(int x1, int y1,int x2,int y2, ARGB color)
+void Rasterizer::drawlineDDA(int x1, int y1,int x2,int y2, ARGB color)
 {
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
@@ -78,7 +84,7 @@ void Image::drawlineDDA(int x1, int y1,int x2,int y2, ARGB color)
 		}
 	}
 }
-void Image::drawlinemiddle(int x1,int y1,int x2,int y2,ARGB color)
+void Rasterizer::drawlinemiddle(int x1,int y1,int x2,int y2,ARGB color)
 {
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
@@ -176,7 +182,7 @@ void Image::drawlinemiddle(int x1,int y1,int x2,int y2,ARGB color)
 	}
 
 }
-void Image::drawlineBresenham(int x1, int y1, int x2, int y2, ARGB color)
+void Rasterizer::drawlineBresenham(int x1, int y1, int x2, int y2, ARGB color)
 {
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
@@ -224,27 +230,30 @@ void Image::drawlineBresenham(int x1, int y1, int x2, int y2, ARGB color)
 	}
 
 }
-ScanLine Image::generatescanline(Vertex vl, Vertex vr)
+ScanLine Rasterizer::generatescanline(Vertex vl, Vertex vr)
 {
 	float width = vr.m_Position.x - vl.m_Position.x;
 	int startX = vl.m_Position.x + 0.5;
 	Vertex step((vr.m_Position.x - vl.m_Position.x) / width, (vr.m_Position.y - vl.m_Position.y) / width,0,0 ,(vr.Color - vl.Color)/width);
 	return ScanLine(vl, step, width,startX, vl.m_Position.y+0.5);
 }
-void Image::drawScanline(Vertex vl, Vertex vr)
+void Rasterizer::drawScanline(Vertex vl, Vertex vr)
 {
 	ScanLine line = generatescanline(vl, vr);
 	Vertex step = line.Setp;
 	int lenght = line.length + 0.5;
 	for (int i = 0; i < lenght; i++)
 	{
-		if (i == lenght / 2)
-			Vertex v(step);
-		setpixel(line.x + i, line.y, line.StartVertex.Color);
+		//if (i == lenght / 2)
+		//	Vertex v(step);
+		if (line.StartVertex.Divz > GetZvalue(line.x + i, line.y))
+		{
+			setpixel(line.x + i, line.y, line.StartVertex.Color); SetZvalue(line.x + i, line.y, line.StartVertex.Divz);
+		}
 		line.StartVertex += step;
 	}
 }
-void Image::SortVertex(Vertex &v1, Vertex &v2, Vertex &v3)
+void Rasterizer::SortVertex(Vertex &v1, Vertex &v2, Vertex &v3)
 {
 	if ((v2.m_Position.y < v3.m_Position.y)||((v2.m_Position.y == v3.m_Position.y)&& (v2.m_Position.x > v3.m_Position.x)))//冒泡算法 先按照y 最大为序，然后y相同按照x小为序
 	{
@@ -259,7 +268,7 @@ void Image::SortVertex(Vertex &v1, Vertex &v2, Vertex &v3)
 		swap(v2, v3);
 	}
 }
-void Image::drawflatButtomtriangles(Vertex v1, Vertex v2, Vertex v3)
+void Rasterizer::drawflatButtomtriangles(Vertex v1, Vertex v2, Vertex v3)
 {
 	int startY = v1.m_Position.y + 0.5;
 	int endY = v3.m_Position.y + 0.5;
@@ -271,7 +280,7 @@ void Image::drawflatButtomtriangles(Vertex v1, Vertex v2, Vertex v3)
 		drawScanline(vl, vr);
 	}
 }
-void Image::drawflatToptriangles(Vertex v1, Vertex v2, Vertex v3)
+void Rasterizer::drawflatToptriangles(Vertex v1, Vertex v2, Vertex v3)
 {
 	int startY = v1.m_Position.y + 0.5;
 	int endY = v3.m_Position.y + 0.5;
@@ -283,8 +292,15 @@ void Image::drawflatToptriangles(Vertex v1, Vertex v2, Vertex v3)
 		drawScanline(vl, vr);
 	}
 }
-void Image::drawtriangles(Vertex v1, Vertex v2, Vertex v3)
+void Rasterizer::drawtriangles(Vertex& v1, Vertex &v2, Vertex& v3)
 {
+	QVector vec1 = v2.m_Position - v1.m_Position;
+	QVector vec2 = v3.m_Position - v2.m_Position;
+	FLOAT3 f1(vec1.x, vec1.y, 0);
+	FLOAT3 f2(vec2.x, vec2.y, 0);
+	float z = vec1.x*vec2.y - vec1.y*vec2.x;
+	if (z > 0)
+		return;
 	SortVertex(v1, v2, v3);
 	if (v2.m_Position.y == v3.m_Position.y)
 	{
@@ -307,7 +323,7 @@ void Image::drawtriangles(Vertex v1, Vertex v2, Vertex v3)
 	}
 	return;
 }
-Outcode Image::ComputeOutCode(float x, float y)
+Outcode Rasterizer::ComputeOutCode(float x, float y)
 {
 	Outcode code;
 
@@ -323,14 +339,14 @@ Outcode Image::ComputeOutCode(float x, float y)
 		code |= TOP;
 	return code;
 }
-void Image::DrawRectangle()
+void Rasterizer::DrawRectangle()
 {
 	drawlineBresenham(viewport.left, viewport.bottom, viewport.right, viewport.bottom, ARGB(0, 1, 0, 0));
 	drawlineBresenham(viewport.left, viewport.top, viewport.right, viewport.top, ARGB(0, 1, 0, 0));
 	drawlineBresenham(viewport.left, viewport.top, viewport.left, viewport.bottom, ARGB(0, 1, 0, 0));
 	drawlineBresenham(viewport.right, viewport.top, viewport.right, viewport.bottom, ARGB(0, 1, 0, 0));
 }
-void Image::LineClipping(Vertex& v1, Vertex &v2)
+void Rasterizer::LineClipping(Vertex& v1, Vertex &v2)
 {
 	int x0 = v1.m_Position.x;
 	int y0 = v1.m_Position.y;
@@ -393,3 +409,25 @@ void Image::LineClipping(Vertex& v1, Vertex &v2)
 }
 
 
+float Rasterizer::GetZvalue(int x, int y)
+{
+	if (x >= 0 && x < width&&y >= 0 && y < height)
+		return Zbuffer[x][y];
+	return 0;
+}
+void Rasterizer::SetZvalue(int x, int y,float value)
+{
+	if (x >= 0 && x < width&&y >= 0 && y < height)
+		Zbuffer[x][y] = value;;
+	return ;
+}
+void Rasterizer::ClearZbuffer()
+{
+	for (int i = 0; i < width; ++i)
+	{
+		for (int j = 0; j < height; ++j)
+		{
+			Zbuffer[i][j] = 0;// 1 is biggest,so everything  is in front of it;
+		}
+	}
+}
