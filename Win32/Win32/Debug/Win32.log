@@ -1,3 +1,21 @@
 ﻿  main.cpp
+  Vector.cpp
+  Matrix.cpp
+  MathInterface.cpp
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(6): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(7): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(8): warning C4244: “初始化”: 从“float”转换到“BYTE”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(107): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(143): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(152): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(161): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(182): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\githubrepository\rasterizer\win32\win32\mathinterface.cpp(203): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+  正在生成代码...
+  正在跳过...(未检测到相关更改)
+  Texture2D.cpp
+  Rasterizer.cpp
+  QRender.cpp
+  LoadBitmap.cpp
   Win32.vcxproj -> D:\GithubRepository\Rasterizer\Win32\Debug\Win32.exe
   Win32.vcxproj -> D:\GithubRepository\Rasterizer\Win32\Debug\Win32.pdb (Full PDB)

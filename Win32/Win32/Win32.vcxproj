@@ -86,9 +86,11 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameObjBase.h" />
     <ClInclude Include="LoadBitmap.h" />
     <ClInclude Include="MathInterface.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="QRender.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Texture2D.h" />
