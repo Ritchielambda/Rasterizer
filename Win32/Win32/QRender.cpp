@@ -15,45 +15,47 @@ void QRender::SetWVP(const Matrix& mat)
 	WVP = mat;
 }
 
-void QRender::SetVertexbuffer(int PVertexsize, Vertex* data)
-{
-	if (Vertexbuffer == data) return;
-	//if (Vertexbuffer) delete Vertexbuffer;
-	Vertexsize = PVertexsize;
-	Vertexbuffer = data;
-}
-void QRender::SetIndexbuffer(int PIndexsize, int * data)
-{
-	if (Indexbuffer == data) return;
-	//if (Indexbuffer) delete Indexbuffer;
-	Indexsize = PIndexsize;
-	Indexbuffer = data;
-}
-void QRender::DrawIndexed()//it's a small project,only support draw triangles with every three vertexs
+//void QRender::SetVertexbuffer(int PVertexsize, std::vector<Vertex>* data)
+//{
+//	if (InVertexbuffer == data) return;
+//	//if (Vertexbuffer) delete Vertexbuffer;
+//	Vertexsize = PVertexsize;
+//	InVertexbuffer = data;
+//}
+//void QRender::SetIndexbuffer(int PIndexsize,std::vector<int>* data)
+//{
+//	if (InIndexbuffer == data) return;
+//	//if (Indexbuffer) delete Indexbuffer;
+//	Indexsize = PIndexsize;
+//	InIndexbuffer = data;
+//}
+void QRender::DrawIndexed()//it's private interface
 {
 	// test only draw one obj  a time   clear buffer here
 	
-	if ((!Vertexbuffer) && (!Indexbuffer)) return;
-	for (int i = 0; i < Indexsize; i += 3)//  do transforming from obj space to screen space
-	{
-		Vertex v1 = Vertexbuffer[Indexbuffer[i]];
-		Vertex v2 = Vertexbuffer[Indexbuffer[i+1]];
-		Vertex v3 = Vertexbuffer[Indexbuffer[i+2]];
-		v1 *= WVP;
-		v2 *= WVP;
-		v3*= WVP;
-		v1.Divz = 1 / v1.m_Position.w;
-		v2.Divz = 1 / v2.m_Position.w;
-		v3.Divz = 1 / v3.m_Position.w;
-		toCVV(v1);
-		toCVV(v2);
-		toCVV(v3);
-		v1 *= Mat_Screen;
-		v2 *= Mat_Screen;
-		v3 *= Mat_Screen;
-		rasterizer->drawtriangles(v1, v2, v3);
-	}
-
+	//if ((!InVertexbuffer) && (!InIndexbuffer)) return;
+	//int temp = Indexsize % 3;
+	//if (temp != 0)return;
+	//for (int i = 0; i < Indexsize; i += 3)//  do transforming from obj space to screen space
+	//{
+	//	Vertex v1 = InVertexbuffer[InIndexbuffer[i]];
+	//	Vertex v2 = InVertexbuffer[InIndexbuffer[i+1]];
+	//	Vertex v3 = InVertexbuffer[InIndexbuffer[i+2]];
+	//	v1 *= WVP;
+	//	v2 *= WVP;
+	//	v3*= WVP;
+	//	v1.Divz = 1 / v1.m_Position.w;
+	//	v2.Divz = 1 / v2.m_Position.w;
+	//	v3.Divz = 1 / v3.m_Position.w;
+	//	toCVV(v1);
+	//	toCVV(v2);
+	//	toCVV(v3);
+	//	v1 *= Mat_Screen;
+	//	v2 *= Mat_Screen;
+	//	v3 *= Mat_Screen;
+	//	rasterizer->drawtriangles(v1, v2, v3);
+	//}
+	//int temp1 = Indexsize % 3;
 }
 
 
@@ -67,4 +69,31 @@ void QRender::toCVV(Vertex& vertex)
 	vertex.m_Position.y /= vertex.m_Position.w;
 	vertex.m_Position.z /= vertex.m_Position.w;
 	vertex.m_Position.w = 1;
+}
+void QRender::HomoSpaceClipping_Triangles()//等先改好了render的结构  再来修改这个函数
+{
+
+}
+
+void QRender::SetWordMatrix(Matrix pwordMatrix)
+{
+	WorldMatrix = pwordMatrix;
+}
+
+void QRender::SetViewMatrix(Matrix pviewMatrix)
+{
+	ViewMatrix = pviewMatrix;
+}
+
+void QRender::SetProjMatrix(Matrix projMatirx)
+{
+	ProjMatrix = projMatirx;
+}
+void QRender::VertexShader()
+{
+	WVP = WorldMatrix * ViewMatrix * ProjMatrix;
+	for (size_t i = 0; i < InIndexbuffer.size(); i++)
+	{
+
+	}
 }

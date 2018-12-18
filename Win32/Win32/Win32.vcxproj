@@ -76,16 +76,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="LoadBitmap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathInterface.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="QRender.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameObjBase.h" />
     <ClInclude Include="LoadBitmap.h" />
     <ClInclude Include="MathInterface.h" />
@@ -94,6 +97,7 @@
     <ClInclude Include="QRender.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="typedef.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

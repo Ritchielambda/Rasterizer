@@ -4,6 +4,7 @@
 #include<math.h>
 #include<Windows.h>
 #include"Texture2D.h"
+#include<vector>
 
 struct ARGB
 {
@@ -23,6 +24,7 @@ struct ARGB
 };
 struct Vertex //顶点的w分量是1，因为进行矩阵变换的时候可以做平移
 {
+	Vertex() = default;
 	Vertex(float posx, float posy, float posz, float posa, ARGB color, FLOAT3 normal = FLOAT3(0, 0, 0)) :m_Position(posx, posy, posz, posa), Color(color), m_Normal(normal) {}
 	Vertex& operator +=(Vertex rhs) { this->m_Position.x += rhs.m_Position.x; this->m_Position.y += rhs.m_Position.y; this->Color += rhs.Color; return *this; }
 	Vertex& operator *=(const Matrix& rhs) { m_Position = m_Position*rhs; return *this; }

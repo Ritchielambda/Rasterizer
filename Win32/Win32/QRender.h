@@ -13,11 +13,21 @@ public:
 
 	void SetWVP(const Matrix& mat);
 
-	void SetVertexbuffer(int Vertexsize, Vertex* data);
+	void SetWordMatrix(Matrix wordMatrix);
 
-	void SetIndexbuffer(int Indexsize, int * data);
+	void SetViewMatrix(Matrix viewMatrix);
 
+	void SetProjMatrix(Matrix projMatirx);
 
+	//there is no need to provide these two interface , rendere will be call only render mesh,
+	//class QRender don't need to save input data
+	//void SetVertexbuffer(int Vertexsize, std::vector<Vertex>* data);
+
+	//void SetIndexbuffer(int Indexsize, std::vector<int> *data);
+
+	void VertexShader();
+
+	void HomoSpaceClipping_Triangles();
 
 	void DrawIndexed();
 
@@ -26,6 +36,8 @@ public:
 	void toCVV(Vertex& vertex);
 
 	Rasterizer * rasterizer;
+
+
 private:
 
 	HWND hwnd;
@@ -38,16 +50,23 @@ private:
 
 	Matrix WVP;
 
+	Matrix WorldMatrix;
+
+	Matrix ProjMatrix;
+
+	Matrix ViewMatrix;
+
 	Matrix Mat_Screen;
 
 	ARGB Color;
 
-	Vertex* Vertexbuffer;
+	std::vector<Vertex>* InVertexbuffer;
 
-	int* Indexbuffer;
+	std::vector<int>* InIndexbuffer;
 
 	int Vertexsize;
 
 	int Indexsize;
+
 
 };

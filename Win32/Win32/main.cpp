@@ -1,4 +1,4 @@
-﻿
+﻿#include"FileLoader.h"
 //Include necessary Headers//
 #include <windows.h>
 #include"QRender.h"
@@ -16,7 +16,7 @@ bool InitializeWindow(HINSTANCE hInstance,	//Initialize our window
 		 int ShowWnd,
 		 int width, int height,
 		 bool windowed);
-void drawpixeltest(Rasterizer a);
+void drawpixeltest();
 int messageloop();	//Main part of the program
 
 LRESULT CALLBACK WndProc(HWND hWnd,	//Windows callback procedure
@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE hInstance,	//Main windows function
         			L"Error", MB_OK);
 		return 0;
 	}
-
+	InitializeRender();
 	messageloop();	//Jump into the heart of our program
 
 	return 0;
@@ -122,7 +122,7 @@ int messageloop(){	//The message loop
 
 		else{	//Otherewise, keep the flow going
 
-			InitializeRender();
+			drawpixeltest();
 		}
 		
 
@@ -161,7 +161,7 @@ switch( msg )	//Check message
 			 wParam,
 			 lParam);
 }
-void drawpixeltest(Rasterizer a)
+void drawpixeltest()
 {
 	//a.drawlineDDA(500, 400, 350, 350, ARGB(0,255, 0, 0));
 	//a.drawlineBresenham(0, 0, 500, 400, ARGB(0,255, 0, 0));
@@ -176,6 +176,7 @@ void drawpixeltest(Rasterizer a)
 			}
 		}
 	}*/
+
 	/*Vertex v1(0, 0,0,0, ARGB(0, 0, 1, 0));
 	Vertex v2(800, 600, 0, 0, ARGB(0, 0, 0, 1));
 	Vertex v3(600, 300, 0, 0, ARGB(0, 1, 0, 0));*/
@@ -183,96 +184,55 @@ void drawpixeltest(Rasterizer a)
 	//a.drawlineBresenham(a.viewport.left, a.viewport.bottom, a.viewport.right, a.viewport.bottom, ARGB(0, 255, 0, 0));
 	/*a.LineClipping(v1, v2);*/
 	Texture2D texture = MathInterface::LoadBitmapToColorArray(L"2.bmp");
-	for (int i = 0; i < texture.m_width; ++i)
-	{
-		for (int j = 0; j < texture.m_height; ++j)
-			a.setpixel(i, j, ARGB(texture.m_pixelbuffer[i][j].w, texture.m_pixelbuffer[i][j].x, texture.m_pixelbuffer[i][j].y, texture.m_pixelbuffer[i][j].z));
-	}
+	//for (int i = 0; i < texture.m_width; ++i)
+	//{
+	//	for (int j = 0; j < texture.m_height; ++j)
+	//		a.setpixel(i, j, ARGB(texture.m_pixelbuffer[i][j].w, texture.m_pixelbuffer[i][j].x, texture.m_pixelbuffer[i][j].y, texture.m_pixelbuffer[i][j].z));
+	//}
 	
 	//StretchBlt(hdc, 0, 0, 200, 200, a.gethdc(), 0, 0, a.bm.bmWidth, a.bm.bmHeight, SRCCOPY);
-	
+	render.DrawIndexed();
+
+
+	//render.DrawIndexed();
+	render.Present();
+
+	HDC hdc = GetDC(hwnd);
+
+	BitBlt(hdc, 0, 0, render.rasterizer->bm.bmWidth, render.rasterizer->bm.bmHeight, render.rasterizer->gethdc(), 0, 0, SRCCOPY);
 }
 
 void InitializeRender()
 {
-	Vertex v[] =
-	{
-		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, ARGB(1.0f, 0.0f, 0.0f, 1.0f)),
-		Vertex(-1.0f, +1.0f, -1.0f,1.0f, ARGB(0.0f, 1.0f, 0.0f, 1.0f)),
-		Vertex(+1.0f, +1.0f, -1.0f, 1.0f, ARGB(0.0f, 0.0f, 1.0f, 1.0f)),
-		Vertex(+1.0f, -1.0f, -1.0f, 1.0f, ARGB(1.0f, 1.0f, 0.0f, 1.0f)),
-		Vertex(-1.0f, -1.0f, +1.0f, 1.0f, ARGB(0.0f, 1.0f, 1.0f, 1.0f)),
-		Vertex(-1.0f, +1.0f, +1.0f, 1.0f, ARGB(1.0f, 1.0f, 1.0f, 1.0f)),
-		Vertex(+1.0f, +1.0f, +1.0f, 1.0f, ARGB(1.0f, 0.0f, 1.0f, 1.0f)),
-		Vertex(+1.0f, -1.0f, +1.0f, 1.0f, ARGB(1.0f, 0.0f, 0.0f, 1.0f)),
-	};
-	int  indices1[] = {
-		//// front face
-		0, 1, 2,
-		0, 2, 3,
 
-		 //back face
-		4, 6, 5,
-		4, 7, 6,
-
-		 //left face
-		4, 5, 1,
-		4, 1, 0,
-
-		 //right face
-		3, 2, 6,
-		3, 6, 7,
-
-		// top face
-		1, 5, 6,
-		1, 6, 2,
-
-		//// bottom face
-		4, 0, 3,
-		4, 3, 7
-	};
-	int  indices2[] = {
-		//// front face
-		//0, 1, 2,
-		//0, 2, 3,
-
-		// back face
-		//4, 6, 5,
-		//4, 7, 6,
-
-		// left face
-		//4, 5, 1,
-		//4, 1, 0,
-
-		// right face
-		//3, 2, 6,
-		//3, 6, 7,
-
-		//// top face
-		//1, 5, 6,
-		1, 6, 2,
-
-		//// bottom face
-		//4, 0, 3,
-		//4, 3, 7
-	};
-	render.SetVertexbuffer(8, v);
-	render.SetIndexbuffer(36, indices1);
-
+	Mesh *mesh = new Mesh;
+	FileLoader fileloader;
+	fileloader.LoadObjFile("rock1.obj", mesh);
 	Matrix world = MatrixIdentity();
 	Matrix rotate = MatrixRotationY(PI/4);
-	world = world*rotate;
+	Matrix trans = MatrixTranslate(0, 0, 500);
+	world = world*rotate*trans;
 	Matrix View = MatrixLookAtLH(QVector(0.0f, 3.0f, -8.f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
 	Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
 	Matrix WVP = world*View*Projection;
 	render.SetWVP(WVP);
 	render.rasterizer->ClearZbuffer();
-	render.DrawIndexed();
-	//render.SetIndexbuffer(3, indices2);
-	//render.DrawIndexed();
-	render.Present();
-	
-	HDC hdc = GetDC(hwnd);
+	Vertex *v = new Vertex[mesh->m_vertexbuffer.size()];
+	if (!mesh->m_vertexbuffer.empty())
+	{
+		memcpy(v, &mesh->m_vertexbuffer[0], mesh->m_vertexbuffer.size() * sizeof(Vertex));
+	}
 
-	BitBlt(hdc, 0, 0, render.rasterizer->bm.bmWidth, render.rasterizer->bm.bmHeight, render.rasterizer->gethdc(), 0, 0, SRCCOPY);
+	int *indexes = new int[mesh->m_indexbuffer.size()];
+
+	if (!mesh->m_vertexbuffer.empty())
+	{
+		memcpy(indexes, &mesh->m_indexbuffer[0], mesh->m_indexbuffer.size() * sizeof(int));
+	}
+	int temp1 = indexes[0];
+	int temp2 = indexes[1];
+	int temp3 = indexes[3];
+	render.SetVertexbuffer(mesh->m_vertexbuffer.size(), v);
+	render.SetIndexbuffer(mesh->m_indexbuffer.size(), indexes);
+	
 }
