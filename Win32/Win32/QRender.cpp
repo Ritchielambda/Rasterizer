@@ -92,8 +92,8 @@ void QRender::SetProjMatrix(Matrix projMatirx)
 void QRender::VertexShader()
 {
 	WVP = WorldMatrix * ViewMatrix * ProjMatrix;
-	for (size_t i = 0; i < InIndexbuffer.size(); i++)
+	for (size_t i = 0; i < (*InVertexbuffer).size(); i++)
 	{
-
+		(*InVertexbuffer)[i].m_Position *= WVP;
 	}
 }

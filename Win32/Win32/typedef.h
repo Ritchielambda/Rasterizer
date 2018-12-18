@@ -1,4 +1,5 @@
 #pragma once
+#include<vector>
 struct OBJ_vertexInfoIndex
 {
 	OBJ_vertexInfoIndex()
@@ -25,4 +26,17 @@ struct OBJ_vertexInfoIndex
 	int vertexID;
 	int texcoordID;
 	int vertexNormalID;
+};
+struct VertexShaderOut_Vertex
+{
+	QVector m_position;
+	FLOAT2 m_texture;
+	FLOAT3 m_Normal;
+};
+struct QRenderdrawcalldata
+{
+	std::vector<Vertex> m_Vertexbuffer;
+	std::vector<int> m_Indexbuffer;
+	UINT offset;
+	UINT VertexCount;
 };
