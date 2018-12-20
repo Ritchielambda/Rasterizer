@@ -23,17 +23,17 @@ Rasterizer::Rasterizer(HWND h, const size_t pwidth, const size_t pheight) :width
 	//创建后缓冲区
 	//先创建一个内存dc
 	//hdc = CreateCompatibleDC(nullptr);
-	m_bit_map = CreateDIBSection(m_hdc, (PBITMAPINFO)&bmphdr, DIB_RGB_COLORS, reinterpret_cast<void**>(&image), nullptr, 0);
+	m_outputcolorbuffer = CreateDIBSection(m_hdc, (PBITMAPINFO)&bmphdr, DIB_RGB_COLORS, reinterpret_cast<void**>(&image), nullptr, 0);
 
 	
-	if (!m_bit_map)
+	if (!m_outputcolorbuffer)
 	{
 		MessageBox(0, (LPCWSTR) "CreateDIBSection Failed.", 0, 0);
 	}
 	
-	m_OldBitmap = (HBITMAP)SelectObject(m_hdc, m_bit_map);
+	m_OldBitmap = (HBITMAP)SelectObject(m_hdc, m_outputcolorbuffer);
 	ReleaseDC(h, hdc);
-	GetObject(m_bit_map, sizeof(BITMAP), &bm);
+	GetObject(m_outputcolorbuffer, sizeof(BITMAP), &bm);
 }
 Rasterizer::~Rasterizer()
 {}

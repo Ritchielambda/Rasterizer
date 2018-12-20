@@ -65,7 +65,7 @@ public:
 	
 
 	/*Public member*/
-	 HBITMAP m_bit_map;
+	 HBITMAP m_outputcolorbuffer;
 	BITMAP bm;
 	HBITMAP m_OldBitmap;
 	static Viewport viewport;

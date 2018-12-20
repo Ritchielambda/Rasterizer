@@ -89,11 +89,16 @@ void QRender::SetProjMatrix(Matrix projMatirx)
 {
 	ProjMatrix = projMatirx;
 }
-void QRender::VertexShader()
+void QRender::VertexShader(Vertex& invertex)
 {
-	WVP = WorldMatrix * ViewMatrix * ProjMatrix;
-	for (size_t i = 0; i < InIndexbuffer.size(); i++)
-	{
+	QVector pos(invertex.m_Position.x, invertex.m_Position.y, invertex.m_Position.z,1.0f);
+	pos = pos *WorldMatrix;
+	pos = pos *ViewMatrix;
 
+	float Z_ViewSpace = pos.z;
+	if (Z_ViewSpace >= 0)
+	{
+		pos.x /= (Z_ViewSpace);
+		pos.y /= (Z_ViewSpace);
 	}
 }

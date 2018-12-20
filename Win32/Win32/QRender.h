@@ -25,7 +25,7 @@ public:
 
 	//void SetIndexbuffer(int Indexsize, std::vector<int> *data);
 
-	void VertexShader();
+	void VertexShader(Vertex& invertex);
 
 	void HomoSpaceClipping_Triangles();
 
