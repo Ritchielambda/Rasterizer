@@ -27,16 +27,33 @@ struct OBJ_vertexInfoIndex
 	int texcoordID;
 	int vertexNormalID;
 };
-struct VertexShaderOut_Vertex
-{
-	QVector m_position;
-	FLOAT2 m_texture;
-	FLOAT3 m_Normal;
-};
+//struct VertexShaderOut_Vertex
+//{
+//	QVector m_position;
+//	FLOAT2 m_texture;
+//	FLOAT3 m_Normal;
+//};
 struct QRenderdrawcalldata
 {
-	std::vector<Vertex> m_Vertexbuffer;
-	std::vector<int> m_Indexbuffer;
+	std::vector<Vertex>* pVertexbuffer;
+	std::vector<UINT>* pIndexbuffer;
 	UINT offset;
 	UINT VertexCount;
+};
+struct VertexShaderOutput_Vertex
+{
+	QVector posH;//homogenous position
+	QVector color;
+	FLOAT2 texcoord;
+
+	//Gouraud shading don't need to pass down the posW and normalW to pixel shader
+	//while Phong shading (per-pixel) need it
+};
+struct RasterizedFragment
+{
+	UINT pixelX;
+	UINT pixelY;
+	QVector color;
+	FLOAT2 texcoord;
+	//VECTOR3 normal;
 };
