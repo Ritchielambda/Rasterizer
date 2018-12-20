@@ -2,7 +2,7 @@
 QRender::QRender(HWND handle, int width,int height)
 {
 	hwnd = handle;
-	WVP = MathInterface::MatrixIdentity();  //´´½¨shaderÊ±£¬³õÊ¼»¯±ä»¯¾ØÕó¡£
+	WVP = MathInterface::MatrixIdentity();  //ï¿½ï¿½ï¿½ï¿½shaderÊ±ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ä»¯ï¿½ï¿½ï¿½ï¿½
 	m_width = width;
 	m_height = height;
 	
@@ -70,7 +70,7 @@ void QRender::toCVV(Vertex& vertex)
 	vertex.m_Position.z /= vertex.m_Position.w;
 	vertex.m_Position.w = 1;
 }
-void QRender::HomoSpaceClipping_Triangles()//µÈÏÈ¸ÄºÃÁËrenderµÄ½á¹¹  ÔÙÀ´ÐÞ¸ÄÕâ¸öº¯Êý
+void QRender::HomoSpaceClipping_Triangles()//ï¿½ï¿½ï¿½È¸Äºï¿½ï¿½ï¿½renderï¿½Ä½á¹¹  ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 
 }
