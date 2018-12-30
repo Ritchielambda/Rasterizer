@@ -1,16 +1,18 @@
-﻿#include"FileLoader.h"
+﻿
 //Include necessary Headers//
 #include <windows.h>
 #include"QRender.h"
-#include"LoadBitmap.h"
 using namespace MathInterface;
 //Define variables/constants//
 LPCTSTR WndClassName = L"firstwindow";	//Define our window class name
 HWND hwnd = NULL;	//Sets our windows handle to NULL
 const int Width  = 800;	//window width
 const int Height = 600;	//window height
-QRender render(hwnd, Width, Height);
+QRender *render;
+Mesh *mesh;
 void InitializeRender();
+HDC m_hdc;
+UINT * image;
 //Functions//
 bool InitializeWindow(HINSTANCE hInstance,	//Initialize our window
 		 int ShowWnd,
@@ -121,7 +123,6 @@ int messageloop(){	//The message loop
         }
 
 		else{	//Otherewise, keep the flow going
-
 			drawpixeltest();
 		}
 		
@@ -163,76 +164,46 @@ switch( msg )	//Check message
 }
 void drawpixeltest()
 {
-	//a.drawlineDDA(500, 400, 350, 350, ARGB(0,255, 0, 0));
-	//a.drawlineBresenham(0, 0, 500, 400, ARGB(0,255, 0, 0));
-	/*for (int i = 0; i<580; i += 5)
+	//StretchBlt(hdc, 0, 0, 200, 200, a.gethdc(), 0, 0, a.bm.bmWidth, a.bm.bmHeight, SRCCOPY);
+	//render.DrawIndexed();
+
+
+	////render.DrawIndexed();
+	//render.Present();
+	
+	
+	/*Texture2D texture = MathInterface::LoadBitmapToColorArray(L"2.bmp");
+
+	for (int i = 0; i < texture.m_height; ++i)
 	{
-		for (int j = 0; j<580; j += 5)
+		for (int j = 0; j < texture.m_width; ++j)
 		{
-			double v = sqrt(pow(i - 350, 2) + pow(j - 350, 2)) - 200;
-			if (v >= 0 && v < 2)
-			{
-				a.drawlineDDA(350, 350, i, j, ARGB(0, (1 + rand() % 255), (1 + rand() % 255) , (1 + rand() % 255)));
-			}
+			image[i*texture.m_width+j] = render->QVectorConverttoINT(texture.m_pixelbuffer[j][i]);
 		}
 	}*/
-
-	/*Vertex v1(0, 0,0,0, ARGB(0, 0, 1, 0));
-	Vertex v2(800, 600, 0, 0, ARGB(0, 0, 0, 1));
-	Vertex v3(600, 300, 0, 0, ARGB(0, 1, 0, 0));*/
-	//a.drawtriangles(v1, v2, v3);
-	//a.drawlineBresenham(a.viewport.left, a.viewport.bottom, a.viewport.right, a.viewport.bottom, ARGB(0, 255, 0, 0));
-	/*a.LineClipping(v1, v2);*/
-	Texture2D texture = MathInterface::LoadBitmapToColorArray(L"2.bmp");
-	//for (int i = 0; i < texture.m_width; ++i)
-	//{
-	//	for (int j = 0; j < texture.m_height; ++j)
-	//		a.setpixel(i, j, ARGB(texture.m_pixelbuffer[i][j].w, texture.m_pixelbuffer[i][j].x, texture.m_pixelbuffer[i][j].y, texture.m_pixelbuffer[i][j].z));
-	//}
 	
-	//StretchBlt(hdc, 0, 0, 200, 200, a.gethdc(), 0, 0, a.bm.bmWidth, a.bm.bmHeight, SRCCOPY);
-	render.DrawIndexed();
-
-
-	//render.DrawIndexed();
-	render.Present();
-
+	render->RenderMesh(*mesh);
 	HDC hdc = GetDC(hwnd);
-
-	BitBlt(hdc, 0, 0, render.rasterizer->bm.bmWidth, render.rasterizer->bm.bmHeight, render.rasterizer->gethdc(), 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, render->GetBufferwidth(), render->GetBufferheight(), render->GetHDC(), 0, 0, SRCCOPY);
 }
 
 void InitializeRender()
 {
-
-	Mesh *mesh = new Mesh;
-	FileLoader fileloader;
-	fileloader.LoadObjFile("rock1.obj", mesh);
+	render = new QRender(hwnd, Width, Height);
+	mesh = new Mesh;
+	mesh->LoadFile_OBJ(L"boxtest.obj");
+	mesh->LoadTexture(L"1.bmp");
 	Matrix world = MatrixIdentity();
-	Matrix rotate = MatrixRotationY(PI/4);
-	Matrix trans = MatrixTranslate(0, 0, 500);
-	world = world*rotate*trans;
-	Matrix View = MatrixLookAtLH(QVector(0.0f, 3.0f, -8.f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
+	Matrix rotate = MatrixRotationZ(PI*5/4);
+	Matrix rotate1 = MatrixRotationX(PI/2);
+	Matrix trans = MatrixTranslate(0, -10, 50);
+	world = world*rotate1*trans;
+	Matrix View = MatrixLookAtLH(QVector(0.0f, 0.0f, -8.f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
 	Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
 	Matrix WVP = world*View*Projection;
-	render.SetWVP(WVP);
-	render.rasterizer->ClearZbuffer();
-	Vertex *v = new Vertex[mesh->m_vertexbuffer.size()];
-	if (!mesh->m_vertexbuffer.empty())
-	{
-		memcpy(v, &mesh->m_vertexbuffer[0], mesh->m_vertexbuffer.size() * sizeof(Vertex));
-	}
-
-	int *indexes = new int[mesh->m_indexbuffer.size()];
-
-	if (!mesh->m_vertexbuffer.empty())
-	{
-		memcpy(indexes, &mesh->m_indexbuffer[0], mesh->m_indexbuffer.size() * sizeof(int));
-	}
-	int temp1 = indexes[0];
-	int temp2 = indexes[1];
-	int temp3 = indexes[3];
-	render.SetVertexbuffer(mesh->m_vertexbuffer.size(), v);
-	render.SetIndexbuffer(mesh->m_indexbuffer.size(), indexes);
-	
+	render->SetWordMatrix(world);
+	render->SetViewMatrix(View);
+	render->SetProjMatrix(Projection);
+	/*fileloader.LoadObjFile("rock1.obj", *mesh->m_vertexbuffer, *mesh->m_indexbuffer);*/
+	//render.rasterizer->ClearZbuffer();
 }

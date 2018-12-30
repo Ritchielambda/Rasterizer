@@ -6,34 +6,7 @@ Viewport Rasterizer::viewport(200,200,600,599);
 Rasterizer::Rasterizer(HWND h, const size_t pwidth, const size_t pheight) :width(pwidth), height(pheight) 
 {
 	image = new UINT[pwidth*pheight];
-	HDC hdc = GetDC(h);
-	m_hdc = CreateCompatibleDC(hdc);
-	BITMAPINFOHEADER bmphdr = { 0 };
-	bmphdr.biSize = sizeof(BITMAPINFOHEADER);
-	bmphdr.biWidth = pwidth;
-	bmphdr.biHeight = pheight;
-	bmphdr.biPlanes = 1;
-	bmphdr.biBitCount = 32;
-	bmphdr.biSizeImage = pheight * pwidth * 4;
-	Zbuffer = new float*[width];
-	for (int i = 0; i < width; ++i)
-	{
-		Zbuffer[i] = new float[height];
-	}
-	//创建后缓冲区
-	//先创建一个内存dc
-	//hdc = CreateCompatibleDC(nullptr);
-	m_outputcolorbuffer = CreateDIBSection(m_hdc, (PBITMAPINFO)&bmphdr, DIB_RGB_COLORS, reinterpret_cast<void**>(&image), nullptr, 0);
-
 	
-	if (!m_outputcolorbuffer)
-	{
-		MessageBox(0, (LPCWSTR) "CreateDIBSection Failed.", 0, 0);
-	}
-	
-	m_OldBitmap = (HBITMAP)SelectObject(m_hdc, m_outputcolorbuffer);
-	ReleaseDC(h, hdc);
-	GetObject(m_outputcolorbuffer, sizeof(BITMAP), &bm);
 }
 Rasterizer::~Rasterizer()
 {}
