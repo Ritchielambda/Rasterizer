@@ -4,6 +4,7 @@
 #include"Matrix.h"
 #include"Vector.h"
 #include"MathInterface.h"
+#include"typedef.h"
 typedef int Outcode;
 const int INSIDE = 0; // 0000
 const int LEFT = 1;   // 0001

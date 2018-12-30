@@ -2,6 +2,8 @@
 #include"MathInterface.h"
 #include"Rasterizer.h"
 #include"typedef.h"
+#include"Mesh.h"
+#include<Windows.h>
 enum RenderMode
 {
 	wireframe,
@@ -10,17 +12,37 @@ enum RenderMode
 class QRender
 {
 public:
-	QRender( HWND handle,int width,int height);
+	QRender( HWND handle,UINT width,UINT height);
 
+	QRender();
+	void Init(UINT bufferwidth, UINT bufferheight,HWND handle);
+
+	//SET function    for out interface
 	void SetWVP(const Matrix& mat);
 
+	void ClearZbuffer();
+
+	void ClearScreen(COLOR4 clearColor);
+	
 	void SetWordMatrix(Matrix wordMatrix);
 
 	void SetViewMatrix(Matrix viewMatrix);
 
 	void SetProjMatrix(Matrix projMatirx);
 
+	void SetMaterial(const Material& material);
+
+	void SetTexure(Texture2D* texture);
+
+	UINT GetBufferwidth();
+
+	UINT GetBufferheight();
+
+	HDC GetHDC();
+
 	void QRender::SetTexcoordTransform(float dx, float dy, float scale);
+	
+	void RenderMesh(Mesh & mesh);
 
 	//there is no need to provide these two interface , rendere will be call only render mesh,
 	//class QRender don't need to save input data
@@ -28,11 +50,7 @@ public:
 
 	//void SetIndexbuffer(int Indexsize, std::vector<int> *data);
 
-	
 
-	void DrawIndexed();
-
-	void Present();
 
 	void toCVV(Vertex& vertex);
 
@@ -40,14 +58,24 @@ public:
 
 
 private:
-
 	HWND hwnd;
+	HDC  m_hdc;
+	UINT m_bufferwidth;
+	UINT m_bufferheight;
+
+	HBITMAP m_outputBitMap;
+	BITMAP bm;
+	HBITMAP m_OldBitmap;
+	UINT*    m_BitMapBuffer;
+
+	
 
 	RenderMode rendermode;
 
-	int m_bufferwidth;
 
-	int m_bufferheight;
+	std::vector<float>*		m_pZBuffer;//depth buffer
+
+	
 	//------------------------pipeline stage----------------------
 
 	Matrix WVP;
@@ -60,6 +88,8 @@ private:
 
 	Matrix Mat_Screen;
 
+
+
 	void VertexShader(Vertex& invertex);
 
 	void HomoSpaceClipping_Triangles(std::vector<UINT>* const pIB);
@@ -68,21 +98,58 @@ private:
 
 	void RasterizeTriangles();
 
+	void PixelShader_DrawTriangles(RasterizedFragment&);
+
+	void Present();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//--------------------------------Helper Function-------------------------------------------------------------------------
+
+	bool mFunction_HorizontalIntersect(float y, const FLOAT2& v1, const FLOAT2& v2, const FLOAT2& v3, UINT& outX1, UINT& outX2);
+
+	COLOR4 mFunction_SampleTexture(float x,float y);
+
+	bool mFunction_DepthTest(UINT x, UINT y, float testZ);
+
+	void mFunction_SetZ(UINT x, UINT y, float z);
+
+	UINT QRender::mFunction_QVectorConverttoINT(COLOR4 &Color);
+
+	void mFunction_UpdateBitMapBuffer();
+
+	void mFunction_InitializeBitMap();
+
 	std::vector<VertexShaderOutput_Vertex>*		m_pVB_HomoSpace;//vertices in homogeous clipping space
 
-	std::vector<VertexShaderOutput_Vertex>*	 m_pVB_HomoSpace_Clipped;//after clipping
+	std::vector<VertexShaderOutput_Vertex>*	    m_pVB_HomoSpace_Clipped;//after clipping
 
-	std::vector<UINT>*										m_pIB_HomoSpace_Clipped;
+	std::vector<UINT>*							m_pIB_HomoSpace_Clipped;
 
-	std::vector<RasterizedFragment>*		m_pVB_Rasterized;//vertices attribute have been interpolated
+	std::vector<RasterizedFragment>*		    m_pVB_Rasterized;//vertices attribute have been interpolated
 
-	//ARGB Color;
+	std::vector<COLOR4>*						m_pOutColorBuffer;//output color buffer
 
-	float						mTexCoord_offsetX;//texcoord transformation info
+	Material                                    m_Material;
 
-	float						mTexCoord_offsetY;
+	Texture2D*									m_pTexture;//current using texture
 
-	float						mTexCoord_scale;
+	float										mTexCoord_offsetX;//texcoord transformation info
+
+	float										mTexCoord_offsetY;
+
+	float										mTexCoord_scale;
 
 	std::vector<Vertex>* InVertexbuffer;
 
@@ -91,6 +158,7 @@ private:
 	int Vertexsize;
 
 	int Indexsize;
+
 
 
 };
