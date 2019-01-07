@@ -1,23 +1,23 @@
 #include"MathInterface.h"
 
 const float MathInterface::PI = 3.1415926f;
-UINT ColorToUINT(ARGB color)
+UINT MathInterface::ColorToUINT(ARGB color)
 {
 	BYTE red = 255 * color.r/*  color.w*/;
 	BYTE green = 255 * color.g/* color.w*/;
 	BYTE blue = 255 * color.b /* color.w*/;
 	return (UINT)((BYTE)blue | (WORD)((BYTE)green << 8) | (DWORD)((BYTE)red << 16));
 }
-float MathInterface::Lerp(float&lhs, float&rhs, float factor)
+float MathInterface::Lerp(const float&lhs, const float&rhs, float factor)
 {
 	return float(lhs + (rhs - lhs)*factor);
 }
-FLOAT2 MathInterface::Lerp(FLOAT2&lhs, FLOAT2&rhs, float factor)
+FLOAT2 MathInterface::Lerp(const FLOAT2&lhs, const FLOAT2&rhs, float factor)
 {
 	return FLOAT2(Lerp(lhs.x,rhs.x, factor),Lerp(lhs.y,rhs.y, factor));
 
 }
-Vertex MathInterface::Lerp(Vertex& lhs, Vertex & rhs, float factor)
+Vertex MathInterface::Lerp(const Vertex& lhs, const Vertex & rhs, float factor)
 {
 	ARGB color = lhs.Color+(rhs.Color - lhs.Color)*factor;
 
@@ -25,7 +25,7 @@ Vertex MathInterface::Lerp(Vertex& lhs, Vertex & rhs, float factor)
  vertex.Divz = lhs.Divz + (rhs.Divz - lhs.Divz)*factor;
  return vertex;
 }
-FLOAT3 MathInterface::Lerp(FLOAT3&lhs, FLOAT3&rhs, float factor)
+FLOAT3 MathInterface::Lerp(const FLOAT3&lhs, const FLOAT3&rhs, float factor)
 {
 	return FLOAT3(Lerp(lhs.x, rhs.x, factor), Lerp(lhs.y, rhs.y, factor), Lerp(lhs.z, rhs.z, factor));
 }
@@ -160,6 +160,22 @@ Matrix MathInterface::MatrixRotationZ(float angle)
 		0, 0, 0, 1
 	);
 }
+Matrix MathInterface::MatrixPitchYawRoll(float pitch_X, float yaw_Y, float roll_Z)
+{
+	Matrix matRotateX;
+	Matrix matRotateY;
+	Matrix matRotateZ;
+
+	matRotateX = MatrixRotationX(pitch_X);
+	matRotateY = MatrixRotationY(yaw_Y);
+	matRotateZ = MatrixRotationZ(roll_Z);
+
+	//outMatrix = [M_RY] x [M_RX] x [M_RZ]  
+	//(a column vector can be pre-Multiplied by this matrix)
+	Matrix outMatrix;
+	outMatrix = matRotateX* matRotateY* matRotateZ;
+	return outMatrix;
+}
 Matrix MathInterface::MatrixLookAtLH(QVector eyePos, QVector lookAt, QVector up)
 {
 	QVector zaxis = lookAt - eyePos;
@@ -201,4 +217,27 @@ Matrix MathInterface::MatrixScreenTransform(int clientWidth, int clientHeight)
 		0, 0, 1, 0,
 		clientWidth / 2, clientHeight / 2, 0, 1
 	);
+}
+UINT MathInterface::Clamp(UINT val, UINT min, UINT max)
+{
+	if (val > max)val = max;
+	if (val < min)val = min;
+	return val;
+}
+
+ float MathInterface::Clamp(float val, float min, float max)
+{
+	if (val > max)val = max;
+	if (val < min)val = min;
+	return val;
+}
+
+ FLOAT2 MathInterface::Clamp(const FLOAT2 & val, const FLOAT2 & min, const FLOAT2 & max)//为什么inline  会导致失败？
+{
+	return FLOAT2(Clamp(val.x, min.x, max.x), Clamp(val.y, min.y, max.y));
+}
+
+ FLOAT3 MathInterface::Clamp(const FLOAT3 & val, const FLOAT3 & min, const FLOAT3 & max)
+{
+	return FLOAT3(Clamp(val.x, min.x, max.x), Clamp(val.y, min.y, max.y), Clamp(val.z, min.z, max.z));
 }

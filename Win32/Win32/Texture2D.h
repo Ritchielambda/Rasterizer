@@ -10,10 +10,12 @@ public:
 	Texture2D(const Texture2D & tex);
 	Texture2D &operator = (const Texture2D& tex);
 	QVector Sample(const FLOAT2& tex);
-
+	UINT GetWidth() {return m_width;}
+	UINT GetHeight() { return m_height; }
+	QVector GetPixel(UINT x, UINT y) { return m_pixelbuffer[x][y]; }
 public:
 	//mem
-	int m_width;
-	int m_height;
+	UINT m_width;
+	UINT m_height;
 	QVector ** m_pixelbuffer;
 };

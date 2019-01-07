@@ -1,6 +1,10 @@
 #include"FileLoader.h"
+#include <windows.h>
+#include <gdiplus.h>
+#include <iostream>
+#pragma comment(lib, "gdiplus.lib")
 
-void FileLoader::LoadObjFile(std::string fpath, Mesh * pMesh)
+bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexBuffer, std::vector<UINT>& refIndexBuffer)
 {
 	std::ifstream file(fpath);
 	//if (!file.good())
@@ -79,18 +83,18 @@ void FileLoader::LoadObjFile(std::string fpath, Mesh * pMesh)
 				{
 					vertexInfoList.push_back(currVertex);
 					//the newest vertex.....
-					pMesh->m_indexbuffer.push_back(vertexInfoList.size() - 1);
+					refIndexBuffer.push_back(vertexInfoList.size() - 1);
 				}
 				else
 				{
-					pMesh->m_indexbuffer.push_back(existedVertexIndex);
+					refIndexBuffer.push_back(existedVertexIndex);
 				}
 			}
 		}
 	}
 	file.close();
-	pMesh->m_vertexbuffer.resize(vertexInfoList.size());
-	for (UINT i = 0; i < pMesh->m_vertexbuffer.size(); ++i)
+	refVertexBuffer.resize(vertexInfoList.size());
+	for (UINT i = 0; i < refVertexBuffer.size(); ++i)
 	{
 		Vertex tmpVertex (0,0,0,0,ARGB(0.5,0.0f,0.0f,0.0f));
 
@@ -99,13 +103,14 @@ void FileLoader::LoadObjFile(std::string fpath, Mesh * pMesh)
 		tmpVertex.m_Position = QVector(pointList.at(indicesCombination.vertexID).x, pointList.at(indicesCombination.vertexID).y, pointList.at(indicesCombination.vertexID).z,0.0f);
 		tmpVertex.m_Normal = VNormalList.at(indicesCombination.vertexNormalID);
 		tmpVertex.m_UV = texcoordList.at(indicesCombination.texcoordID);
-
+		tmpVertex.Color = ARGB(1.0f, 1.0f, 1.0f, 1.0f);
 
 		//.......
-		pMesh->m_vertexbuffer.at(i) = (tmpVertex);
+		refVertexBuffer.at(i) = (tmpVertex);
 	}
+	return true;
 }
-bool FileLoader::LoadObjPpm(std::string fpath, int width,int height,QVector ** pixelbuffer)
+bool FileLoader::LoadObjPpm(std::wstring fpath, int width,int height,QVector ** pixelbuffer)
 {
 	std::ifstream fileIn(fpath, std::ios::binary);
 	if (fileIn.good() == FALSE)
@@ -142,4 +147,34 @@ bool FileLoader::LoadObjPpm(std::string fpath, int width,int height,QVector ** p
 	}
 
 	return TRUE;
+}
+Texture2D* FileLoader::LoadBitmapToColorArray(std::wstring filePath)
+{
+	Gdiplus::GdiplusStartupInput gdiplusstartupinput;
+	ULONG_PTR gdiplustoken;
+	Gdiplus::GdiplusStartup(&gdiplustoken, &gdiplusstartupinput, nullptr);
+
+	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(filePath.c_str());
+	UINT height = bmp->GetHeight();
+	UINT width = bmp->GetWidth();
+	//≥ı ºªØTexture2D
+	Texture2D *texture = new Texture2D(width, height);
+
+	Gdiplus::Color color;
+
+	for (int y = 0; y < height; y++)
+		for (int x = 0; x < width; x++)
+		{
+			bmp->GetPixel(x, y, &color);
+
+			texture->m_pixelbuffer[x][height - 1 - y] = QVector(
+				color.GetRed() / 255.f,
+				color.GetGreen() / 255.f,
+				color.GetBlue() / 255.f,
+				1.f
+			);
+		}
+	delete bmp;
+	Gdiplus::GdiplusShutdown(gdiplustoken);
+	return texture;
 }

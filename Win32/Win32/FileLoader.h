@@ -1,15 +1,18 @@
 #pragma once
-#include"Mesh.h"
 #include<string>
 #include<fstream>
 #include<sstream>
 #include"typedef.h"
+#include"Texture2D.h"
+#include <string>
+#include <vector>
 class FileLoader
 {
 public:
 	FileLoader() = default;
-	void LoadObjFile(std::string fpath,Mesh * pMesh);
-	bool LoadObjPpm(std::string fpath, int width,int height,QVector** pixelbuffer);
+	bool LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexBuffer, std::vector<UINT>& refIndexBuffer);
+	bool LoadObjPpm(std::wstring fpath, int width,int height,QVector** pixelbuffer);
+	Texture2D* LoadBitmapToColorArray(std::wstring filePath);
 private:
 
 };
