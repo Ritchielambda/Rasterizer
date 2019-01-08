@@ -10,7 +10,7 @@ namespace MathInterface
 {
 
 
-	UINT ColorToUINT(ARGB color);
+	UINT ColorToUINT(QVector color);
 	extern const float PI;
 	float Lerp(const float&lhs, const float&rhs, float factor);
 	FLOAT2 Lerp(const FLOAT2&lhs, const FLOAT2&rhs, float factor);
@@ -60,5 +60,7 @@ namespace MathInterface
 
 	  FLOAT3 Clamp(const FLOAT3 & val, const FLOAT3 & min, const FLOAT3 & max);
 
+	  float Vec3_Dot(const  FLOAT3& vec1, const FLOAT3& vec2);
 
+	  FLOAT3 Vec3_Reflect(const FLOAT3 &vec1, const FLOAT3& norm);
 }

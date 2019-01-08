@@ -22,7 +22,7 @@ public:
 	FLOAT3		GetPosition();
 
 	FLOAT3		GetDirection();
-
+	
 	void				Move(FLOAT3 vRelativePos);//pos and lookat
 
 	void				Move(float relativeX, float relativeY, float relativeZ);

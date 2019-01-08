@@ -41,13 +41,13 @@ ARGB Rasterizer::getpixel(int x, int y)
 {
 	return ARGB(0,255, 0, 0);
 }
-void Rasterizer::setpixel(int x, int y, ARGB color)
+void Rasterizer::setpixel(int x, int y, QVector color)
 {
 	if (x >= 0 && x < width && y >= 0 && y <height)
 	image[width*y + x] = ColorToUINT(color);
 }
 
-void Rasterizer::drawlineDDA(int x1, int y1,int x2,int y2, ARGB color)
+void Rasterizer::drawlineDDA(int x1, int y1,int x2,int y2, QVector color)
 {
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
@@ -84,7 +84,7 @@ void Rasterizer::drawlineDDA(int x1, int y1,int x2,int y2, ARGB color)
 		}
 	}
 }
-void Rasterizer::drawlinemiddle(int x1,int y1,int x2,int y2,ARGB color)
+void Rasterizer::drawlinemiddle(int x1,int y1,int x2,int y2,QVector color)
 {
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
@@ -182,7 +182,7 @@ void Rasterizer::drawlinemiddle(int x1,int y1,int x2,int y2,ARGB color)
 	}
 
 }
-void Rasterizer::drawlineBresenham(int x1, int y1, int x2, int y2, ARGB color)
+void Rasterizer::drawlineBresenham(int x1, int y1, int x2, int y2, QVector color)
 {
 	int dx = abs(x2 - x1);
 	int dy = abs(y2 - y1);
@@ -341,10 +341,10 @@ Outcode Rasterizer::ComputeOutCode(float x, float y)
 }
 void Rasterizer::DrawRectangle()
 {
-	drawlineBresenham(viewport.left, viewport.bottom, viewport.right, viewport.bottom, ARGB(0, 1, 0, 0));
-	drawlineBresenham(viewport.left, viewport.top, viewport.right, viewport.top, ARGB(0, 1, 0, 0));
-	drawlineBresenham(viewport.left, viewport.top, viewport.left, viewport.bottom, ARGB(0, 1, 0, 0));
-	drawlineBresenham(viewport.right, viewport.top, viewport.right, viewport.bottom, ARGB(0, 1, 0, 0));
+	drawlineBresenham(viewport.left, viewport.bottom, viewport.right, viewport.bottom, QVector(0, 1, 0, 0));
+	drawlineBresenham(viewport.left, viewport.top, viewport.right, viewport.top, QVector(0, 1, 0, 0));
+	drawlineBresenham(viewport.left, viewport.top, viewport.left, viewport.bottom, QVector(0, 1, 0, 0));
+	drawlineBresenham(viewport.right, viewport.top, viewport.right, viewport.bottom, QVector(0, 1, 0, 0));
 }
 void Rasterizer::LineClipping(Vertex& v1, Vertex &v2)
 {
@@ -404,7 +404,7 @@ void Rasterizer::LineClipping(Vertex& v1, Vertex &v2)
 		// Following functions are left for implementation by user based on
 		// their platform (OpenGL/graphics.h etc.)
 		DrawRectangle();
-		drawlineBresenham(x0, y0, x1, y1, ARGB(0, 0, 1, 0));
+		drawlineBresenham(x0, y0, x1, y1, QVector(0, 0, 1, 0));
 	}
 }
 

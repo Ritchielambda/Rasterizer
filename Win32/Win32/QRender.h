@@ -37,6 +37,8 @@ public:
 
 	void SetCameraPos(FLOAT3 campos);
 
+	void SetCamera(ICamera& cam);
+
 	void SetLighting(int index,const DirectionalLight& light);
 
 	void SetLightingEnabled(bool );
@@ -79,7 +81,7 @@ private:
 	FLOAT3    m_CameraPos;
 	RenderMode rendermode;
 
-	bool mLightEnabled;
+
 
 	std::vector<float>*		m_pZBuffer;//depth buffer
 
@@ -97,7 +99,7 @@ private:
 	Matrix Mat_Screen;
 
 	static const UINT	c_maxLightCount = 8;
-	BOOL					mLightEnabled;
+	bool					mLightEnabled;
 	DirectionalLight	mDirLight[c_maxLightCount];//"IsEnabled"control whether to enable a light in one draw call
 
 	void VertexShader(Vertex& invertex);
@@ -142,7 +144,7 @@ private:
 	void mFunction_InitializeBitMap();
 
 
-	QVector mFunction_VertexLighting(const FLOAT3& vPosW, const FLOAT3& vNormalW);
+	COLOR4 mFunction_VertexLighting(const FLOAT3& vPosW, const FLOAT3& vNormalW);
 
 	std::vector<VertexShaderOutput_Vertex>*		m_pVB_HomoSpace;//vertices in homogeous clipping space
 

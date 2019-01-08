@@ -9,6 +9,7 @@ HWND hwnd = NULL;	//Sets our windows handle to NULL
 const int Width  = 800;	//window width
 const int Height = 600;	//window height
 QRender *render;
+ICamera* gCamera;
 Mesh *mesh;
 void InitializeRender();
 HDC m_hdc;
@@ -193,17 +194,32 @@ void InitializeRender()
 	mesh = new Mesh;
 	mesh->LoadFile_OBJ(L"teapot.obj");
 	mesh->LoadTexture(L"1.bmp");
-	Matrix world = MatrixIdentity();
-	Matrix rotate = MatrixRotationZ(PI);
-	//Matrix rotate1 = MatrixRotationX(PI/2);
-	Matrix trans = MatrixTranslate(0, -10, 250);
-	world = world*rotate*trans;
+	Matrix trans = MatrixTranslate(0, 10, 250);
+	mesh->SetPosition(0, 0, 0);
+	//set camera done
+	gCamera = new ICamera;
+	gCamera->SetPosition(0, 0, -8.0f);
+	gCamera->SetLookAt(0, 0, 0);
+	gCamera->SetViewAngle(0.4f*3.14f, Width / Height);
+	gCamera->SetViewFrustumPlane(1.0f, 1000);
 	Matrix View = MatrixLookAtLH(QVector(0.0f, 0.0f, -8.f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
-	Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
-	Matrix WVP = world*View*Projection;
-	render->SetWordMatrix(world);
-	render->SetViewMatrix(View);
-	render->SetProjMatrix(Projection);
+	//Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
+	//Matrix WVP = world*View*Projection;
+//	render->SetWordMatrix(world);
+//	render->SetViewMatrix(View);
+//	render->SetProjMatrix(Projection);
+	//Set lighting
+	DirectionalLight mSceneLight;
+	// set direction lighting
+	mSceneLight.mAmbientColor = { 1.0f,1.0f,1.0f };
+	mSceneLight.mDiffuseColor = { 1.0f,1.0f,1.0f };
+	mSceneLight.mDiffuseIntensity = 1.0f;
+	mSceneLight.mDirection = { -1.0f,-1.0f,-1.0f };
+	mSceneLight.mIsEnabled = TRUE;
+	mSceneLight.mSpecularColor = { 1.0f,1.0f,1.0f };
+	mSceneLight.mSpecularIntensity = 1.2f;
+	render->SetLighting(0, mSceneLight);
+	render->SetCamera(*gCamera);
 	/*fileloader.LoadObjFile("rock1.obj", *mesh->m_vertexbuffer, *mesh->m_indexbuffer);*/
 	//render.rasterizer->ClearZbuffer();
 }

@@ -38,10 +38,11 @@ public:
 	Rasterizer(HWND h, const size_t pwidth, const size_t pheight);
 	/*render*/
 	ARGB getpixel(int x, int y);
-	void setpixel(int x, int y, ARGB color);
-	void drawlineDDA(int x1, int y1,int x2,int y2, ARGB color);
-	void drawlinemiddle(int x1, int y1, int x2, int y2, ARGB color);
-	void drawlineBresenham(int x1, int y1, int x2, int y2, ARGB color);
+	void setpixel(int x, int y, QVector);
+
+	void drawlineDDA(int x1, int y1,int x2,int y2, QVector color);
+	void drawlinemiddle(int x1, int y1, int x2, int y2, QVector color);
+	void drawlineBresenham(int x1, int y1, int x2, int y2, QVector color);
 	void drawScanline(Vertex vl, Vertex vr);
 	void drawflatButtomtriangles(Vertex v1, Vertex v2, Vertex v3);
 	void drawflatToptriangles(Vertex v1, Vertex v2, Vertex v3);

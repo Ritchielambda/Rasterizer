@@ -96,14 +96,14 @@ bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexB
 	refVertexBuffer.resize(vertexInfoList.size());
 	for (UINT i = 0; i < refVertexBuffer.size(); ++i)
 	{
-		Vertex tmpVertex (0,0,0,0,ARGB(0.5,0.0f,0.0f,0.0f));
+		Vertex tmpVertex (0,0,0,0,QVector(0.5,0.0f,0.0f,0.0f));
 
 		//several indices which can retrieve vertex information
 		OBJ_vertexInfoIndex& indicesCombination = vertexInfoList.at(i);
 		tmpVertex.m_Position = QVector(pointList.at(indicesCombination.vertexID).x, pointList.at(indicesCombination.vertexID).y, pointList.at(indicesCombination.vertexID).z,0.0f);
 		tmpVertex.m_Normal = VNormalList.at(indicesCombination.vertexNormalID);
 		tmpVertex.m_UV = texcoordList.at(indicesCombination.texcoordID);
-		tmpVertex.Color = ARGB(1.0f, 1.0f, 1.0f, 1.0f);
+		tmpVertex.Color = QVector(1.0f, 1.0f, 1.0f, 1.0f);
 
 		//.......
 		refVertexBuffer.at(i) = (tmpVertex);

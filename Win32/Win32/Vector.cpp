@@ -58,3 +58,14 @@ QVector QVector::operator*(const float rhs)const
 		w
 	);
 }
+
+QVector QVector::operator/(const float rhs) const
+{
+
+	return QVector(
+		x / rhs,
+		y / rhs,
+		z / rhs,
+		w
+	);
+}

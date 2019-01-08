@@ -286,12 +286,13 @@ void QRender::mFunction_InitializeBitMap()
 
 
 
-QVector QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vNormalW)
+COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vNormalW)
 {
 	//--------------for each vertex, perform Gouraud Shading ------------------
 
 	QVector outColor = { 0.0f,0.0f,0.0f,0.0f };
-
+	FLOAT3 unitNormal = vNormalW;
+	unitNormal = unitNormal.Normalize();
 	for (UINT i = 0; i < c_maxLightCount; ++i)
 	{
 		if (mDirLight[i].mIsEnabled)
@@ -300,12 +301,34 @@ QVector QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & v
 			unitIncomingLightVec.Normalize();
 
 			FLOAT3 toEye = m_CameraPos - vPosW;
+			toEye.Normalize();
 
+			FLOAT3 currentambient = { 0,0,0 };
+			FLOAT3 currentdiffuse = { 0,0,0 };
+			FLOAT3 currentspeculat = { 0,0,0 };
+			float diffusefactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, toEye);
+
+			if (diffusefactor > 0.0f)
+			{
+				currentdiffuse = diffusefactor *mDirLight[i].mDiffuseColor;
+				if (m_pTexture == nullptr)
+				{
+					currentdiffuse = currentdiffuse * m_Material.diffuse;
+				}
+
+				FLOAT3 unitOutgoingLightVec = MathInterface::Vec3_Reflect(unitIncomingLightVec, unitNormal);
+				//specular color
+				float SpecFactor =
+					mDirLight[i].mSpecularIntensity * pow(max(MathInterface::Vec3_Dot(unitOutgoingLightVec, toEye), 0.0f), m_Material.specularSmoothLevel);
+				currentspeculat = SpecFactor * m_Material.specular*mDirLight[i].mSpecularColor;
+			}
+			FLOAT3 outColor3 = currentambient + currentdiffuse + currentspeculat;
+			outColor += COLOR4(outColor3.x, outColor3.y, outColor3.z, 0.0f);
 		}
 
 	}
 
-	return QVector();
+	return outColor;
 }
 
 void QRender::RasterizeTriangles()
@@ -555,6 +578,10 @@ void QRender::SetCameraPos(FLOAT3 campos)
 {
 	m_CameraPos = campos;
 }
+void QRender::SetCamera(ICamera & cam)
+{
+	m_pCamera = &cam;
+}
 void QRender::SetLighting(int index, const DirectionalLight& light)
 {
 	mDirLight[index] = light;
@@ -588,19 +615,19 @@ void QRender::RenderMesh(Mesh & mesh)
 	// camera done
 	//------------------------------------------
 	Matrix matW, matV, matP;
+
+	mesh.GetWorldMatrix(matW);
 	m_pCamera->GetViewMatrix(matV);
-
 	m_pCamera->GetProjMatrix(matP);
-	//----------------to do---------------------
 
-	//--------------------------------------------
-	
+
+	SetWordMatrix(matW);
 	SetViewMatrix(matV);
 	SetProjMatrix(matP);
 	SetCameraPos(m_pCamera->GetPosition());
-
+	SetMaterial(mesh.mMaterial);
 	SetTexure(mesh.m_texture);
-	
+	SetLightingEnabled(true);
 
 	QRenderdrawcalldata drawCallData;
 	drawCallData.offset = 0;
@@ -609,7 +636,6 @@ void QRender::RenderMesh(Mesh & mesh)
 	drawCallData.VertexCount = mesh.GetVertexCount();
 
 	DrawTriangles(drawCallData);
-
 }
 void QRender::VertexShader(Vertex& invertex)
 {
@@ -641,18 +667,15 @@ void QRender::VertexShader(Vertex& invertex)
 		invertex.m_UV.y*mTexCoord_scale + mTexCoord_offsetY);
 
 	//lighting process          
-/************************************************************
-
-todo
-	
-
-************************************************************/
-
-	if (mLightEnabled)
+	/*if (mLightEnabled)
 	{
-		outVertex.color = mfunc
+		outVertex.color = mFunction_VertexLighting(FLOAT3(outVertex.posH.x, outVertex.posH.y, outVertex.posH.z), FLOAT3(Normal.x, Normal.y, Normal.z));
 	}
-	outVertex.color = QVector(invertex.Color.r, invertex.Color.g, invertex.Color.b, invertex.Color.a);
+	else*/
+	{
+		outVertex.color =QVector(1.0,0,0,0);
+	}
+	
 	m_pVB_HomoSpace->push_back(outVertex);
 
 }

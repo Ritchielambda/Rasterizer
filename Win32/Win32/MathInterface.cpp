@@ -1,11 +1,11 @@
 #include"MathInterface.h"
 
 const float MathInterface::PI = 3.1415926f;
-UINT MathInterface::ColorToUINT(ARGB color)
+UINT MathInterface::ColorToUINT(QVector color)
 {
-	BYTE red = 255 * color.r/*  color.w*/;
-	BYTE green = 255 * color.g/* color.w*/;
-	BYTE blue = 255 * color.b /* color.w*/;
+	BYTE red = 255 * color.x/*  color.w*/;
+	BYTE green = 255 * color.y/* color.w*/;
+	BYTE blue = 255 * color.z /* color.w*/;
 	return (UINT)((BYTE)blue | (WORD)((BYTE)green << 8) | (DWORD)((BYTE)red << 16));
 }
 float MathInterface::Lerp(const float&lhs, const float&rhs, float factor)
@@ -19,7 +19,7 @@ FLOAT2 MathInterface::Lerp(const FLOAT2&lhs, const FLOAT2&rhs, float factor)
 }
 Vertex MathInterface::Lerp(const Vertex& lhs, const Vertex & rhs, float factor)
 {
-	ARGB color = lhs.Color+(rhs.Color - lhs.Color)*factor;
+	QVector color = lhs.Color+(rhs.Color - lhs.Color)*factor;
 
  Vertex vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor), Lerp(lhs.m_Position.y, rhs.m_Position.y, factor), Lerp(lhs.m_Position.z, rhs.m_Position.z, factor), Lerp(lhs.m_Position.w, rhs.m_Position.w, factor),color);
  vertex.Divz = lhs.Divz + (rhs.Divz - lhs.Divz)*factor;
@@ -173,7 +173,7 @@ Matrix MathInterface::MatrixPitchYawRoll(float pitch_X, float yaw_Y, float roll_
 	//outMatrix = [M_RY] x [M_RX] x [M_RZ]  
 	//(a column vector can be pre-Multiplied by this matrix)
 	Matrix outMatrix;
-	outMatrix = matRotateX* matRotateY* matRotateZ;
+	outMatrix = matRotateY*(matRotateX*matRotateZ) ;
 	return outMatrix;
 }
 Matrix MathInterface::MatrixLookAtLH(QVector eyePos, QVector lookAt, QVector up)
@@ -241,3 +241,15 @@ UINT MathInterface::Clamp(UINT val, UINT min, UINT max)
 {
 	return FLOAT3(Clamp(val.x, min.x, max.x), Clamp(val.y, min.y, max.y), Clamp(val.z, min.z, max.z));
 }
+
+ float MathInterface::Vec3_Dot(const FLOAT3 & vec1, const FLOAT3 & vec2)
+ {
+	 return vec1.x*vec2.x + vec1.y*vec2.y + vec1.z + vec2.z;
+ }
+
+ FLOAT3 MathInterface::Vec3_Reflect(const FLOAT3 & vec1, const FLOAT3 & norm)
+ {
+	 FLOAT3 In = vec1;
+	 FLOAT3 Out = (-1)*In + 2 * (In - Vec3_Dot(In, norm) / In.Length()*norm);
+	 return Out;
+ }

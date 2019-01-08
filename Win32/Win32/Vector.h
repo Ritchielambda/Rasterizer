@@ -42,8 +42,12 @@ struct FLOAT3
 		y += rhs.y;
 		z += rhs.z;
 		return *this;
-	};;
+	};
 	FLOAT3 operator+(const FLOAT3 &rhs) { return FLOAT3(x + rhs.x, y + rhs.y, z + rhs.z); }
+	friend FLOAT3 operator*(float scaleFactor, const FLOAT3& vec)
+	{
+		return FLOAT3(scaleFactor*vec.x, scaleFactor*vec.y, scaleFactor*vec.z);
+	}
 	FLOAT3& operator*=(const float scaleFactor)
 	{
 		x *= scaleFactor;
@@ -51,6 +55,7 @@ struct FLOAT3
 		z *= scaleFactor;
 		return *this;
 	}
+	FLOAT3 operator*(const FLOAT3& rhs) { return FLOAT3(x*rhs.x, y*rhs.y, z*rhs.z); }
 	FLOAT3 operator-(const FLOAT3 &rhs) { return FLOAT3(x - rhs.x, y - rhs.y,z-rhs.z); }
 	FLOAT3& Normalize(){
 		float len = Length();
@@ -93,6 +98,11 @@ public:
 	{
 		return QVector(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
+	QVector& operator+=(const QVector& rhs)
+	{
+		x += rhs.x; y += rhs.y; z += rhs.z; w += rhs.w;
+		return *this;
+	}
 
 public:
 	float Length();
@@ -104,5 +114,6 @@ public:
 	QVector operator-()const;
 	QVector operator*(const Matrix & rhs)const;
 	QVector operator*(const float rhs)const;
+	QVector operator/(const float rhs) const;
 
 };

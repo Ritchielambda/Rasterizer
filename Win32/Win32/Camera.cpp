@@ -6,10 +6,10 @@ ICamera::ICamera()
 	mRotateY_Yaw = 0;
 	mRotateZ_Roll = 0;
 	mViewAngleY = 60.0f / 180.0f * MathInterface::PI;
-	mAspectRatio = 1.5;
-	mPosition = FLOAT3(0, 0, 0);
-	mLookat = FLOAT3(1, 0, 0);
-	mDirection = FLOAT3(1, 0, 0);
+	mAspectRatio = 4/3;
+	mPosition = FLOAT3(0, 0, -8);
+	mLookat = FLOAT3(0, 0, 0);
+	mDirection = FLOAT3(0, 0, 1);
 	mNearPlane = 1.0f;
 	mFarPlane = 1000.0f;
 
@@ -120,12 +120,6 @@ void ICamera::RotateX_Pitch(float angleX)
 	SetRotationX_Pitch(newAngle);
 	mFunction_UpdateDirection();
 };
-void ICamera::RotateX_Pitch(float angleX)
-{
-	float newAngle = mRotateX_Pitch + angleX;
-	SetRotationX_Pitch(newAngle);
-	mFunction_UpdateDirection();
-};
 
 void ICamera::RotateZ_Roll(float angleZ)
 {
@@ -138,7 +132,7 @@ void ICamera::fps_MoveForward(float fSignedDistance, BOOL enableYAxisMovement)
 	/*		Z
 	|    / A
 	|_ /
-	O	|/__________ X
+   O|/__________ X
 
 	angle AOZ is the yaw angle
 
@@ -261,13 +255,14 @@ void	ICamera::mFunction_UpdateViewMatrix()
 	Matrix	tmpMatrixRotation;
 	//先对齐原点
 
+	//为什么只要三个角度就能确定视角矩阵呢  不应该还有一个up向量吗  fuck?
 	tmpMatrixTranslation = MatrixTranslate(-mPosition.x, -mPosition.y, -mPosition.z);
 	//然后用 yawpitchroll的逆阵 转到view空间
 	tmpMatrixRotation = MatrixPitchYawRoll(mRotateX_Pitch, mRotateY_Yaw, mRotateZ_Roll);
 	//正交矩阵的转置是逆
 	tmpMatrixRotation = MatrixTranspose(tmpMatrixRotation);
-	//先平移，再旋转 (column vector)
-	mMatrixView = tmpMatrixRotation* tmpMatrixTranslation;
+	//先平移，再旋转 (column vector)  逆变换就是先旋转再平移
+	mMatrixView = tmpMatrixRotation * tmpMatrixTranslation;
 };
 
 void	ICamera::mFunction_UpdateRotation()
@@ -287,7 +282,7 @@ void	ICamera::mFunction_UpdateRotation()
 		mRotateX_Pitch = 0;
 		mRotateY_Yaw = 0;
 		mRotateZ_Roll = 0;
-		mDirection = FLOAT3(1.0f, 0, 0);
+		mDirection = FLOAT3(0.0, 0, 1.0);
 		mLookat = mPosition + mDirection;
 		return;
 	}
