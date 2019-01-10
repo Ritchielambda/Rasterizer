@@ -5,10 +5,13 @@ Mesh::Mesh()
 	m_indexbuffer = new std::vector<UINT>;
 	m_texture = nullptr;
 	
+	mRotationX_Pitch = 0;
+	mRotationY_Yaw = 0;
+	mRotationZ_Roll = 0;
 
-
+	mPosition = { 0,0,0 };
 	Material defaultMat;
-	defaultMat.ambient = { 0.2f,0.2f,0.2f };
+	defaultMat.ambient = { 0.0f,0.23f,1.0f };
 	defaultMat.diffuse = { 0.8f,0.8f,0.8f };
 	defaultMat.specular = { 1.0f,1.0f,1.0f };
 	defaultMat.specularSmoothLevel = 20;
@@ -27,6 +30,7 @@ void Mesh::Settexture(Texture2D * texture)
 
 void Mesh::SetPosition(float x, float y, float z)
 {
+	mPosition = FLOAT3(x,y,z);
 }
 
 void Mesh::SetPosition(const FLOAT3 & pos)
@@ -130,12 +134,12 @@ void Mesh::mFunction_UpdateWorldMatrix()
 
 	tmpMatrix.Identity();
 
-	tmpMatrix =MathInterface::MatrixPitchYawRoll(mRotationY_Yaw, mRotationX_Pitch, mRotationZ_Roll);
+	tmpMatrix =MathInterface::MatrixPitchYawRoll(mRotationX_Pitch, mRotationY_Yaw, mRotationZ_Roll);
 
 	//ÐÞ¸ÄÆ½ÒÆÏî
-	tmpMatrix.m[0][3] = mPosition.x;
-	tmpMatrix.m[1][3] = mPosition.y;
-	tmpMatrix.m[2][3] = mPosition.z;
+	tmpMatrix.m[3][0] = mPosition.x;
+	tmpMatrix.m[3][1] = mPosition.y;
+	tmpMatrix.m[3][3] = mPosition.z;
 
 	mMatrixWorld = tmpMatrix;
 }

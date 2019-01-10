@@ -244,7 +244,7 @@ UINT MathInterface::Clamp(UINT val, UINT min, UINT max)
 
  float MathInterface::Vec3_Dot(const FLOAT3 & vec1, const FLOAT3 & vec2)
  {
-	 return vec1.x*vec2.x + vec1.y*vec2.y + vec1.z + vec2.z;
+	 return vec1.x*vec2.x + vec1.y*vec2.y + vec1.z*vec2.z;
  }
 
  FLOAT3 MathInterface::Vec3_Reflect(const FLOAT3 & vec1, const FLOAT3 & norm)

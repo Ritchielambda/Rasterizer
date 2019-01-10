@@ -67,6 +67,7 @@ void QRender::Init(UINT bufferwidth, UINT bufferheight,HWND handle)
 	m_BitMapBuffer = new UINT[m_bufferheight*m_bufferwidth];
 	COLOR4 color = COLOR4(QVector(0.0f, 0.0f, 0.0f, 0.0f));
 	ClearScreen(color);
+	ClearZbuffer();
 	mFunction_InitializeBitMap();
 }
 void QRender::SetWVP(const Matrix& mat)
@@ -157,7 +158,7 @@ inline bool QRender::mFunction_DepthTest(UINT x, UINT y, float testZ)
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }
 
@@ -293,7 +294,7 @@ COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vN
 	QVector outColor = { 0.0f,0.0f,0.0f,0.0f };
 	FLOAT3 unitNormal = vNormalW;
 	unitNormal = unitNormal.Normalize();
-	for (UINT i = 0; i < c_maxLightCount; ++i)
+	for (UINT i = 0; i < 1; ++i)
 	{
 		if (mDirLight[i].mIsEnabled)
 		{
@@ -303,11 +304,14 @@ COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vN
 			FLOAT3 toEye = m_CameraPos - vPosW;
 			toEye.Normalize();
 
-			FLOAT3 currentambient = { 0,0,0 };
+
+			FLOAT3 currentAmbient = m_Material.ambient* mDirLight[i].mAmbientColor ;
 			FLOAT3 currentdiffuse = { 0,0,0 };
 			FLOAT3 currentspeculat = { 0,0,0 };
-			float diffusefactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, toEye);
 
+
+			
+			float diffusefactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, toEye);
 			if (diffusefactor > 0.0f)
 			{
 				currentdiffuse = diffusefactor *mDirLight[i].mDiffuseColor;
@@ -320,9 +324,9 @@ COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vN
 				//specular color
 				float SpecFactor =
 					mDirLight[i].mSpecularIntensity * pow(max(MathInterface::Vec3_Dot(unitOutgoingLightVec, toEye), 0.0f), m_Material.specularSmoothLevel);
-				currentspeculat = SpecFactor * m_Material.specular*mDirLight[i].mSpecularColor;
+				//currentspeculat = SpecFactor * m_Material.specular*mDirLight[i].mSpecularColor;
 			}
-			FLOAT3 outColor3 = currentambient + currentdiffuse + currentspeculat;
+			FLOAT3 outColor3 = currentAmbient + currentdiffuse + currentspeculat;
 			outColor += COLOR4(outColor3.x, outColor3.y, outColor3.z, 0.0f);
 		}
 
@@ -356,6 +360,8 @@ todo
 		{
 			outV.x = float(m_bufferwidth) * (v.posH.x + 1.0f) / 2.0f;
 			outV.y = float(m_bufferheight) * (-v.posH.y + 1.0f) / 2.0f;
+			//real y is opposite to pixel_y
+			outV.y = m_bufferheight - outV.y - 1;
 		};
 		FLOAT2 v1_pixel, v2_pixel, v3_pixel;//pixel space
 		convertToPixelSpace(v1, v1_pixel);
@@ -656,10 +662,10 @@ void QRender::VertexShader(Vertex& invertex)
 	pos.z = pos.z / pos.w;
 	pos.w = 1.0f;
 	outVertex.posH = pos;
-	Matrix WorldMat_Trans = MathInterface::MatrixInverse(WorldMatrix);
-	WorldMat_Trans = MathInterface::MatrixTranspose(WorldMat_Trans);
+	//Matrix WorldMat_Trans = MathInterface::MatrixInverse(WorldMatrix);
+	//WorldMat_Trans = MathInterface::MatrixTranspose(WorldMat_Trans);
 	QVector Normal(invertex.m_Normal.x, invertex.m_Normal.y, invertex.m_Normal.z, 1.0f);
-	Normal = Normal*WorldMat_Trans;
+	Normal = Normal*WorldMatrix;
 
 	//texture process
 	outVertex.texcoord = FLOAT2(
@@ -667,11 +673,11 @@ void QRender::VertexShader(Vertex& invertex)
 		invertex.m_UV.y*mTexCoord_scale + mTexCoord_offsetY);
 
 	//lighting process          
-	/*if (mLightEnabled)
+	if (mLightEnabled)
 	{
 		outVertex.color = mFunction_VertexLighting(FLOAT3(outVertex.posH.x, outVertex.posH.y, outVertex.posH.z), FLOAT3(Normal.x, Normal.y, Normal.z));
 	}
-	else*/
+	else
 	{
 		outVertex.color =QVector(1.0,0,0,0);
 	}
