@@ -305,13 +305,14 @@ COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vN
 			toEye.Normalize();
 
 
-			FLOAT3 currentAmbient = m_Material.ambient* mDirLight[i].mAmbientColor ;
+			FLOAT3 currentAmbient = m_Material.ambient* mDirLight[i].mAmbientColor * m_Material.diffuse;
 			FLOAT3 currentdiffuse = { 0,0,0 };
 			FLOAT3 currentspeculat = { 0,0,0 };
 
 
 			
-			float diffusefactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, toEye);
+			float diffusefactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, unitNormal);
+			vec_diffusefactor.push_back(diffusefactor);
 			if (diffusefactor > 0.0f)
 			{
 				currentdiffuse = diffusefactor *mDirLight[i].mDiffuseColor;
@@ -665,6 +666,7 @@ void QRender::VertexShader(Vertex& invertex)
 	//Matrix WorldMat_Trans = MathInterface::MatrixInverse(WorldMatrix);
 	//WorldMat_Trans = MathInterface::MatrixTranspose(WorldMat_Trans);
 	QVector Normal(invertex.m_Normal.x, invertex.m_Normal.y, invertex.m_Normal.z, 1.0f);
+	//according to realtime rendering chapter2 ,with no scale transform ,normal transform matrix is world matrix
 	Normal = Normal*WorldMatrix;
 
 	//texture process

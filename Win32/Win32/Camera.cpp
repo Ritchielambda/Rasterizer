@@ -256,13 +256,14 @@ void	ICamera::mFunction_UpdateViewMatrix()
 	//先对齐原点
 
 	//为什么只要三个角度就能确定视角矩阵呢  不应该还有一个up向量吗  fuck?
+	//因为原先的视角矩阵就是世界矩阵 Up向量已经确定拉!!!  fuck 第二条才想明白
 	tmpMatrixTranslation = MatrixTranslate(-mPosition.x, -mPosition.y, -mPosition.z);
 	//然后用 yawpitchroll的逆阵 转到view空间
 	tmpMatrixRotation = MatrixPitchYawRoll(mRotateX_Pitch, mRotateY_Yaw, mRotateZ_Roll);
 	//正交矩阵的转置是逆
 	tmpMatrixRotation = MatrixTranspose(tmpMatrixRotation);
 	//先平移，再旋转 (column vector)  逆变换就是先旋转再平移
-	mMatrixView = tmpMatrixRotation * tmpMatrixTranslation;
+	mMatrixView = tmpMatrixTranslation*tmpMatrixRotation;
 };
 
 void	ICamera::mFunction_UpdateRotation()

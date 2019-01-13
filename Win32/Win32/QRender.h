@@ -158,6 +158,7 @@ private:
 
 	Material                                    m_Material;
 
+	std::vector<float> vec_diffusefactor;
 	Texture2D*									m_pTexture;//current using texture
 
 	float										mTexCoord_offsetX;//texcoord transformation info

@@ -192,18 +192,18 @@ void InitializeRender()
 {
 	render = new QRender(hwnd, Width, Height);
 	mesh = new Mesh;
-	mesh->LoadFile_OBJ(L"teapot.obj");
+	mesh->LoadFile_OBJ(L"deer.obj");
 	//mesh->LoadTexture(L"1.bmp");
 
 	Matrix trans = MatrixTranslate(0, 10, 250);
-	mesh->SetPosition(0, 0, 25);
+	mesh->SetPosition(0, 0, 15);
 	//set camera done
 	gCamera = new ICamera;
-	gCamera->SetPosition(0, 5, -8.0f);
+	gCamera->SetPosition(10, 10, -10.0f);
 	gCamera->SetLookAt(0, 0, 0);
 	gCamera->SetViewAngle(0.4f*3.14f, Width / Height);
 	gCamera->SetViewFrustumPlane(1.0f, 1000);
-	Matrix View = MatrixLookAtLH(QVector(0.0f, 5.0f, -8.f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
+	Matrix View = MatrixLookAtLH(QVector(10, 0, -10.0f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
 	//Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
 	//Matrix WVP = world*View*Projection;
 //	render->SetWordMatrix(world);
@@ -213,8 +213,8 @@ void InitializeRender()
 	DirectionalLight mSceneLight;
 	// set direction lighting
 	mSceneLight.mAmbientColor = { 1.0f,1.0f,1.0f };
-	mSceneLight.mDiffuseColor = { 1.0f,1.0f,1.0f };
-	mSceneLight.mDiffuseIntensity = 0.7f;
+	mSceneLight.mDiffuseColor = { 0.0f,.96f,1.0f };
+	mSceneLight.mDiffuseIntensity = 1.0f;
 	mSceneLight.mDirection = { -1,-1.0f,1.0f };
 	mSceneLight.mIsEnabled = TRUE;
 	mSceneLight.mSpecularColor = { 1.0f,1.0f,1.0f };

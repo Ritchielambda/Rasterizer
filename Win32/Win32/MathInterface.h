@@ -9,6 +9,18 @@
 namespace MathInterface
 {
 
+	struct BOUNDINGBOX
+	{
+		BOUNDINGBOX()
+		{
+			max = { 1,1,1 };
+			min = { 0,0,0 };
+		}
+
+		FLOAT3 max;
+		FLOAT3 min;
+	};
+
 
 	UINT ColorToUINT(QVector color);
 	extern const float PI;

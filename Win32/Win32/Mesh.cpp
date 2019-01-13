@@ -11,7 +11,7 @@ Mesh::Mesh()
 
 	mPosition = { 0,0,0 };
 	Material defaultMat;
-	defaultMat.ambient = { 0.0f,0.23f,1.0f };
+	defaultMat.ambient = { 0.2f,0.2f,0.2f };
 	defaultMat.diffuse = { 0.8f,0.8f,0.8f };
 	defaultMat.specular = { 1.0f,1.0f,1.0f };
 	defaultMat.specularSmoothLevel = 20;
