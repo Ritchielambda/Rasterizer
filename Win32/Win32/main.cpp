@@ -1,15 +1,17 @@
 ﻿
 //Include necessary Headers//
 #include <windows.h>
-#include"QRender.h"
+#include"MyGameEngine.h"
+#include"Game.h"
 using namespace MathInterface;
+using namespace GamePlay;
 //Define variables/constants//
 LPCTSTR WndClassName = L"firstwindow";	//Define our window class name
-HWND hwnd = NULL;	//Sets our windows handle to NULL
+
 const int Width  = 800;	//window width
 const int Height = 600;	//window height
-QRender *render;
-ICamera* gCamera;
+//QRender *render;
+//ICamera* gCamera;
 Mesh *mesh;
 void InitializeRender();
 HDC m_hdc;
@@ -182,27 +184,29 @@ void drawpixeltest()
 			image[i*texture.m_width+j] = render->QVectorConverttoINT(texture.m_pixelbuffer[j][i]);
 		}
 	}*/
-	
-	render->RenderMesh(*mesh);
+	MainGame();
+	gRenderer.ClearScreen(COLOR4(0,0,0,0));
+	gRenderer.ClearZbuffer();
+	gRenderer.RenderMesh(*mesh);
+
 	HDC hdc = GetDC(hwnd);
-	BitBlt(hdc, 0, 0, render->GetBufferwidth(), render->GetBufferheight(), render->GetHDC(), 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, gRenderer.GetBufferwidth(), gRenderer.GetBufferheight(), gRenderer.GetHDC(), 0, 0, SRCCOPY);
 }
 
 void InitializeRender()
 {
-	render = new QRender(hwnd, Width, Height);
 	mesh = new Mesh;
-	mesh->LoadFile_OBJ(L"deer.obj");
+	mesh->LoadFile_OBJ(L"teapot.obj");
 	//mesh->LoadTexture(L"1.bmp");
 
 	Matrix trans = MatrixTranslate(0, 10, 250);
 	mesh->SetPosition(0, 0, 15);
 	//set camera done
-	gCamera = new ICamera;
-	gCamera->SetPosition(10, 10, -10.0f);
-	gCamera->SetLookAt(0, 0, 0);
-	gCamera->SetViewAngle(0.4f*3.14f, Width / Height);
-	gCamera->SetViewFrustumPlane(1.0f, 1000);
+//	gCamera = new ICamera;
+	gCamera.SetPosition(10, 10, -10.0f);
+	gCamera.SetLookAt(0, 0, 0);
+	gCamera.SetViewAngle(0.4f*3.14f, Width / Height);
+	gCamera.SetViewFrustumPlane(1.0f, 1000);
 	Matrix View = MatrixLookAtLH(QVector(10, 0, -10.0f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
 	//Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
 	//Matrix WVP = world*View*Projection;
@@ -219,8 +223,7 @@ void InitializeRender()
 	mSceneLight.mIsEnabled = TRUE;
 	mSceneLight.mSpecularColor = { 1.0f,1.0f,1.0f };
 	mSceneLight.mSpecularIntensity = 0.7f;
-	render->SetLighting(0, mSceneLight);
-	render->SetCamera(*gCamera);
-	/*fileloader.LoadObjFile("rock1.obj", *mesh->m_vertexbuffer, *mesh->m_indexbuffer);*/
-	//render.rasterizer->ClearZbuffer();
+	gRenderer.SetLighting(0, mSceneLight);
+	gRenderer.SetCamera(gCamera);
+	gRenderer.hwnd = hwnd;
 }

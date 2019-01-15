@@ -1,11 +1,10 @@
-#include"QRender.h"
-#include<math.h>
-#include <cmath>
+#include"MyGameEngine.h"
+using namespace MathInterface;
 QRender::QRender(HWND handle, UINT width,UINT height)
 {
 	hwnd = handle;
 	WVP = MathInterface::MatrixIdentity();  //
-	rasterizer = new Rasterizer(handle, width, height);
+	//rasterizer = new Rasterizer(handle, width, height);
 	rendermode = fillmode;
 	Mat_Screen = MathInterface::MatrixScreenTransform(m_bufferwidth,m_bufferheight);
 
@@ -30,11 +29,13 @@ QRender::QRender(HWND handle, UINT width,UINT height)
 	Init(width, height,handle);
 }
 
-QRender::QRender()
+
+
+QRender::~QRender()
 {
 
 	//  Effective 16:  new and delete must be used in pair;
-	delete rasterizer;
+	//delete rasterizer;
 	delete m_pVB_HomoSpace ;
 	delete m_pVB_HomoSpace_Clipped;
 	delete m_pIB_HomoSpace_Clipped;

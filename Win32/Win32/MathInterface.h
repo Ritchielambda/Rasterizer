@@ -1,13 +1,169 @@
 #pragma once
-#include"Matrix.h"
-#include"Vector.h"
-#include<math.h>
-#include<Windows.h>
-#include"typedef.h"
-#include"Texture2D.h"
-#include<vector>
+struct Vertex;
 namespace MathInterface
 {
+
+	struct FLOAT2
+	{
+		FLOAT2() { x = y = 0; }
+		FLOAT2(float x1, float y1) :x(x1), y(y1) {}
+		float x;
+		float y;
+		FLOAT2 operator-(FLOAT2 &rhs) { return FLOAT2(x - rhs.x, y - rhs.y); }
+		friend FLOAT2 operator*(float scaleFactor, const FLOAT2& vec)
+		{
+			return FLOAT2(scaleFactor*vec.x, scaleFactor* vec.y);
+		}
+		FLOAT2 operator+(const FLOAT2& vec)
+		{
+			return FLOAT2(x + vec.x, y + vec.y);
+		}
+		FLOAT2 operator*(const float scaleFactor)
+		{
+			return FLOAT2(scaleFactor*x, scaleFactor* y);
+		}
+	};
+	struct FLOAT3
+	{
+		FLOAT3() {}
+		FLOAT3(float x1, float y1, float z1) { x = x1; y = y1; z = z1; }
+		FLOAT3(const float column[3])
+		{
+			x = column[0];
+			y = column[1];
+			z = column[2];
+		}
+		FLOAT3& operator=(const FLOAT3 &rhs) { x = rhs.x; y = rhs.y; z = rhs.z; return *this; }
+		float	Length() const
+		{
+			return sqrtf(x*x + y*y + z*z);
+		};
+		FLOAT3& operator+=(const FLOAT3& rhs)
+		{
+			x += rhs.x;
+			y += rhs.y;
+			z += rhs.z;
+			return *this;
+		};
+		FLOAT3 operator+(const FLOAT3 &rhs) { return FLOAT3(x + rhs.x, y + rhs.y, z + rhs.z); }
+		friend FLOAT3 operator*(float scaleFactor, const FLOAT3& vec)
+		{
+			return FLOAT3(scaleFactor*vec.x, scaleFactor*vec.y, scaleFactor*vec.z);
+		}
+		FLOAT3& operator*=(const float scaleFactor)
+		{
+			x *= scaleFactor;
+			y *= scaleFactor;
+			z *= scaleFactor;
+			return *this;
+		}
+		FLOAT3 operator*(const FLOAT3& rhs) { return FLOAT3(x*rhs.x, y*rhs.y, z*rhs.z); }
+		FLOAT3 operator-(const FLOAT3 &rhs) { return FLOAT3(x - rhs.x, y - rhs.y, z - rhs.z); }
+		FLOAT3& Normalize() {
+			float len = Length();
+			if (len != 0)
+			{
+				x /= len;
+				y /= len;
+				z /= len;
+			}
+			else
+			{
+				x = y = z = 0.0f;
+			}
+			return *this;
+		}
+
+		float x;
+		float y;
+		float z;
+	};
+	struct QVector
+	{
+
+		float x;
+		float y;
+		float z;
+		float w;
+
+		QVector(float px, float py, float pz, float pw) :x(px), y(py), z(pz), w(pw) {}
+		QVector() = default;
+		QVector(const QVector & rhs) :x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w) {}
+		QVector&operator = (const QVector&rhs) { x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w; return *this; }
+		QVector operator*(const QVector&vec)const { return QVector(vec.x*x, vec.y*y, vec.z*z, vec.w*w); }
+		friend QVector operator*(float scaleFactor, const QVector& vec)
+		{
+			return QVector(scaleFactor*vec.x, scaleFactor* vec.y, scaleFactor* vec.z, scaleFactor*vec.w);
+		}
+
+		QVector operator+(const QVector& vec)
+		{
+			return QVector(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
+		}
+		QVector& operator+=(const QVector& rhs)
+		{
+			x += rhs.x; y += rhs.y; z += rhs.z; w += rhs.w;
+			return *this;
+		}
+
+		float Length() 
+		{
+			float len = x*x + y*y + z*z + w*w;
+			len = static_cast<float>(sqrt(len));
+			return len;
+		}
+		QVector Normalize()
+		{
+			float length = Length();
+			if (length != 0)
+			{
+				float inv = 1.0f / length;
+				x *= inv;
+				y *= inv;
+				z *= inv;
+				w *= inv;
+			}
+			return *this;
+		}
+		float dot(const QVector &rhs) const { return (x*rhs.x + y*rhs.y + z*rhs.z + w*rhs.w); }
+		QVector Cross(const QVector& rhs) {
+			float m1 = y * rhs.z - z * rhs.y;
+			float m2 = z * rhs.x - x * rhs.z;
+			float m3 = x * rhs.y - y * rhs.x;
+			return QVector(m1, m2, m3, 0.0f);
+		}
+		QVector operator+(const QVector & rhs)const {
+			return QVector(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
+		}
+		QVector operator-(const QVector & rhs)const 
+		{
+			return QVector(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
+		}//minus
+		QVector operator-() { return QVector(-x, -y, -z, -w); }
+		QVector operator*(const Matrix & rhs) {
+			return QVector(x*rhs._11 + y*rhs._21 + z*rhs._31 + w*rhs._41,
+				x*rhs._12 + y*rhs._22 + z*rhs._32 + w*rhs._42,
+				x*rhs._13 + y*rhs._23 + z*rhs._33 + w*rhs._43,
+				x*rhs._14 + y*rhs._24 + z*rhs._34 + w*rhs._44);
+		}
+		QVector operator*(const float rhs)const {
+			return QVector(
+				x * rhs,
+				y * rhs,
+				z * rhs,
+				w
+			);
+		}
+		QVector operator/(const float rhs) {
+			return QVector(
+				x / rhs,
+				y / rhs,
+				z / rhs,
+				w
+			);
+		}
+
+	};
 
 	struct BOUNDINGBOX
 	{

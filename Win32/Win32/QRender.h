@@ -1,10 +1,5 @@
 #pragma once
-#include"MathInterface.h"
-#include"Rasterizer.h"
-#include"typedef.h"
-#include"Mesh.h"
-#include"Camera.h"
-#include<Windows.h>
+
 enum RenderMode
 {
 	wireframe,
@@ -15,7 +10,8 @@ class QRender
 public:
 	QRender( HWND handle,UINT width,UINT height);
 
-	QRender();
+
+	~QRender();
 	void Init(UINT bufferwidth, UINT bufferheight,HWND handle);
 
 	//SET function    for out interface
@@ -63,11 +59,11 @@ public:
 
 	void toCVV(Vertex& vertex);
 
-	Rasterizer * rasterizer;
+	//Rasterizer * rasterizer;
 
-
-private:
 	HWND hwnd;
+private:
+	
 	HDC  m_hdc;
 	UINT m_bufferwidth;
 	UINT m_bufferheight;

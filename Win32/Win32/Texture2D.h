@@ -1,6 +1,5 @@
 #pragma once
-#include"Vector.h"
-#include<Windows.h>
+
 class Texture2D
 {
 public:

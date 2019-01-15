@@ -1,4 +1,5 @@
-#include"MathInterface.h"
+
+#include"MyGameEngine.h"
 
 const float MathInterface::PI = 3.1415926f;
 UINT MathInterface::ColorToUINT(QVector color)
@@ -17,14 +18,14 @@ FLOAT2 MathInterface::Lerp(const FLOAT2&lhs, const FLOAT2&rhs, float factor)
 	return FLOAT2(Lerp(lhs.x,rhs.x, factor),Lerp(lhs.y,rhs.y, factor));
 
 }
-Vertex MathInterface::Lerp(const Vertex& lhs, const Vertex & rhs, float factor)
-{
-	QVector color = lhs.Color+(rhs.Color - lhs.Color)*factor;
-
- Vertex vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor), Lerp(lhs.m_Position.y, rhs.m_Position.y, factor), Lerp(lhs.m_Position.z, rhs.m_Position.z, factor), Lerp(lhs.m_Position.w, rhs.m_Position.w, factor),color);
- vertex.Divz = lhs.Divz + (rhs.Divz - lhs.Divz)*factor;
- return vertex;
-}
+//Vertex MathInterface::Lerp(const Vertex& lhs, const Vertex & rhs, float factor)
+//{
+//	QVector color = lhs.Color+(rhs.Color - lhs.Color)*factor;
+//
+// Vertex vertex(Lerp(lhs.m_Position.x, rhs.m_Position.x,factor), Lerp(lhs.m_Position.y, rhs.m_Position.y, factor), Lerp(lhs.m_Position.z, rhs.m_Position.z, factor), Lerp(lhs.m_Position.w, rhs.m_Position.w, factor),color);
+// vertex.Divz = lhs.Divz + (rhs.Divz - lhs.Divz)*factor;
+// return vertex;
+//}
 FLOAT3 MathInterface::Lerp(const FLOAT3&lhs, const FLOAT3&rhs, float factor)
 {
 	return FLOAT3(Lerp(lhs.x, rhs.x, factor), Lerp(lhs.y, rhs.y, factor), Lerp(lhs.z, rhs.z, factor));

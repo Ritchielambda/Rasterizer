@@ -1,4 +1,6 @@
-#include"Texture2D.h"
+#include"MyGameEngine.h"
+
+using namespace MathInterface;
 Texture2D::Texture2D(int width, int height)
 {
 	m_width = width;

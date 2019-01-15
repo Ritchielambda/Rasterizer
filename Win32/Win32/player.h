@@ -13,7 +13,7 @@ namespace GamePlay
 
 		void Render();
 
-		void GetBoudingBox(MathInterface::BOUNDINGBOX& outBox);
+		void GetBoundingBox(BOUNDINGBOX& outBox);
 
 		FLOAT3 GetPosition();
 

@@ -1,4 +1,6 @@
-#include"Mesh.h"
+#include"MyGameEngine.h"
+
+
 Mesh::Mesh()
 {
 	m_vertexbuffer = new std::vector<Vertex>;

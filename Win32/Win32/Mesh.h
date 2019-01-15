@@ -1,7 +1,5 @@
 #pragma once
-#include"MathInterface.h"
-#include"FileLoader.h"
-#include<vector>
+
 class Mesh :private FileLoader
 {
 	friend class QRender;

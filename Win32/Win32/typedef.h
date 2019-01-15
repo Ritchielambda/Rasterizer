@@ -1,8 +1,12 @@
 #pragma once
-#include<vector>
-#include"Vector.h"
-#include<Windows.h>
 
+using namespace MathInterface;
+
+enum TIMER_TIMEUINT
+{
+	TIMER_TIMEUNIT_MILLISECOND = 0,
+	TIMER_TIMEUNIT_SECOND = 1,
+};
 struct ARGB
 {
 	ARGB() { a = r = g = b = 0; }
@@ -18,18 +22,6 @@ struct ARGB
 	float g;
 	float b;
 	float a;
-};
-struct Vertex //顶点的w分量是1，因为进行矩阵变换的时候可以做平移
-{
-	Vertex() = default;
-	Vertex(float posx, float posy, float posz, float posa, QVector color, FLOAT3 normal = FLOAT3(0, 0, 0)) :m_Position(posx, posy, posz, posa), Color(color), m_Normal(normal) {}
-	Vertex& operator +=(Vertex rhs) { this->m_Position.x += rhs.m_Position.x; this->m_Position.y += rhs.m_Position.y; this->Color += rhs.Color; return *this; }
-	Vertex& operator *=(const Matrix& rhs) { m_Position = m_Position*rhs; return *this; }
-	QVector m_Position;
-	FLOAT2 m_UV;
-	FLOAT3 m_Normal;
-	QVector Color;
-	float Divz;
 };
 
 struct OBJ_vertexInfoIndex
@@ -65,6 +57,19 @@ struct OBJ_vertexInfoIndex
 //	FLOAT2 m_texture;
 //	FLOAT3 m_Normal;
 //};
+struct Vertex //顶点的w分量是1，因为进行矩阵变换的时候可以做平移
+{
+	Vertex() = default;
+	Vertex(float posx, float posy, float posz, float posa, QVector color, FLOAT3 normal = FLOAT3(0, 0, 0)) :m_Position(posx, posy, posz, posa), Color(color), m_Normal(normal) {}
+	Vertex& operator +=(Vertex rhs) { this->m_Position.x += rhs.m_Position.x; this->m_Position.y += rhs.m_Position.y; this->Color += rhs.Color; return *this; }
+	Vertex& operator *=(const Matrix& rhs) { m_Position = m_Position*rhs; return *this; }
+	QVector m_Position;
+	FLOAT2 m_UV;
+	FLOAT3 m_Normal;
+	QVector Color;
+	float Divz;
+};
+
 typedef QVector COLOR4;
 struct QRenderdrawcalldata
 {
@@ -113,7 +118,7 @@ public:
 	{
 		ZeroMemory(this, sizeof(*this));
 		mSpecularIntensity = 1.0f;
-		mDirection = FLOAT3(1.0f, 0, 0);
+		mDirection = MathInterface::FLOAT3(1.0f, 0, 0);
 		mDiffuseIntensity = 0.5;
 		mIsEnabled = true;
 	}
