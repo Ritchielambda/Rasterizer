@@ -15,9 +15,10 @@
 
 
 
-
+#include"PointCollection.h"
 #include"Texture2D.h"
 #include"FileLoader.h"
+#include "GeometryMeshGenerator.h"
 #include"Mesh.h"
 #include"Camera.h"
 #include"QRender.h"

@@ -1,11 +1,9 @@
-#include"FileLoader.h"
-#include <windows.h>
-#include <gdiplus.h>
-#include <iostream>
-#pragma comment(lib, "gdiplus.lib")
+#include"MyGameEngine.h"
+
 
 bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexBuffer, std::vector<UINT>& refIndexBuffer)
 {
+
 	std::ifstream file(fpath);
 	//if (!file.good())
 	//{
@@ -13,9 +11,9 @@ bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexB
 	//	return FALSE;
 	//}
 
-	std::vector<FLOAT3> pointList;//xyz buffer
-	std::vector<FLOAT2> texcoordList;//texcoord buffer
-	std::vector<FLOAT3> VNormalList;//vertex normal buffer
+	std::vector<MathInterface::FLOAT3> pointList;//xyz buffer
+	std::vector<MathInterface::FLOAT2> texcoordList;//texcoord buffer
+	std::vector<MathInterface::FLOAT3> VNormalList;//vertex normal buffer
 	std::vector<OBJ_vertexInfoIndex> vertexInfoList;//indices combination
 
 	std::string currString;
@@ -26,13 +24,13 @@ bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexB
 		file >> currString;
 		if (currString == "v")
 		{
-			FLOAT3 currPoint(0, 0, 0);
+			MathInterface::FLOAT3 currPoint(0, 0, 0);
 			file >> currPoint.x >> currPoint.y >> currPoint.z;
 			pointList.push_back(currPoint);
 		}
 		if (currString == "vn")
 		{
-			FLOAT3 currNormal(0, 0, 0);
+			MathInterface::FLOAT3 currNormal(0, 0, 0);
 			file >> currNormal.x >> currNormal.y >> currNormal.z;
 			VNormalList.push_back(currNormal);
 		}
@@ -40,7 +38,7 @@ bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexB
 		//texture coordinate "vt 1.0000000 0.0000000"
 		if (currString == "vt")
 		{
-			FLOAT2 currTexCoord(0, 0);
+			MathInterface::FLOAT2 currTexCoord(0, 0);
 			file >> currTexCoord.x >> currTexCoord.y;
 			texcoordList.push_back(currTexCoord);
 		}
@@ -96,21 +94,21 @@ bool FileLoader::LoadObjFile(std::wstring fpath, std::vector<Vertex>& refVertexB
 	refVertexBuffer.resize(vertexInfoList.size());
 	for (UINT i = 0; i < refVertexBuffer.size(); ++i)
 	{
-		Vertex tmpVertex (0,0,0,0,QVector(0.5,0.0f,0.0f,0.0f));
+		Vertex tmpVertex (0,0,0,0, MathInterface::QVector(0.5,0.0f,0.0f,0.0f));
 
 		//several indices which can retrieve vertex information
 		OBJ_vertexInfoIndex& indicesCombination = vertexInfoList.at(i);
-		tmpVertex.m_Position = QVector(pointList.at(indicesCombination.vertexID).x, pointList.at(indicesCombination.vertexID).y, pointList.at(indicesCombination.vertexID).z,0.0f);
+		tmpVertex.m_Position = MathInterface::QVector(pointList.at(indicesCombination.vertexID).x, pointList.at(indicesCombination.vertexID).y, pointList.at(indicesCombination.vertexID).z,0.0f);
 		tmpVertex.m_Normal = VNormalList.at(indicesCombination.vertexNormalID);
 		tmpVertex.m_UV = texcoordList.at(indicesCombination.texcoordID);
-		tmpVertex.Color = QVector(1.0f, 1.0f, 1.0f, 1.0f);
+		tmpVertex.Color = MathInterface::QVector(1.0f, 1.0f, 1.0f, 1.0f);
 
 		//.......
 		refVertexBuffer.at(i) = (tmpVertex);
 	}
 	return true;
 }
-bool FileLoader::LoadObjPpm(std::wstring fpath, int width,int height,QVector ** pixelbuffer)
+bool FileLoader::LoadObjPpm(std::wstring fpath, int width,int height, MathInterface::QVector ** pixelbuffer)
 {
 	std::ifstream fileIn(fpath, std::ios::binary);
 	if (fileIn.good() == FALSE)
@@ -141,40 +139,10 @@ bool FileLoader::LoadObjPpm(std::wstring fpath, int width,int height,QVector ** 
 	//output
 	for (UINT i = 0; i < width*height; ++i)
 	{
-		QVector tempvec;
+		MathInterface::QVector tempvec;
 		tempvec = { byteBuff[3 * i] / 255.0f,byteBuff[3 * i + 1] / 255.0f,byteBuff[3 * i + 2] / 255.0f ,1.0f};
 		pixelbuffer[i / width][i%width] = tempvec;
 	}
 
 	return TRUE;
-}
-Texture2D* FileLoader::LoadBitmapToColorArray(std::wstring filePath)
-{
-	Gdiplus::GdiplusStartupInput gdiplusstartupinput;
-	ULONG_PTR gdiplustoken;
-	Gdiplus::GdiplusStartup(&gdiplustoken, &gdiplusstartupinput, nullptr);
-
-	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(filePath.c_str());
-	UINT height = bmp->GetHeight();
-	UINT width = bmp->GetWidth();
-	//≥ı ºªØTexture2D
-	Texture2D *texture = new Texture2D(width, height);
-
-	Gdiplus::Color color;
-
-	for (int y = 0; y < height; y++)
-		for (int x = 0; x < width; x++)
-		{
-			bmp->GetPixel(x, y, &color);
-
-			texture->m_pixelbuffer[x][height - 1 - y] = QVector(
-				color.GetRed() / 255.f,
-				color.GetGreen() / 255.f,
-				color.GetBlue() / 255.f,
-				1.f
-			);
-		}
-	delete bmp;
-	Gdiplus::GdiplusShutdown(gdiplustoken);
-	return texture;
 }

@@ -33,7 +33,7 @@ namespace MathInterface
 			y = column[1];
 			z = column[2];
 		}
-		FLOAT3& operator=(const FLOAT3 &rhs) { x = rhs.x; y = rhs.y; z = rhs.z; return *this; }
+		//FLOAT3& operator=(const FLOAT3 &rhs) { x = rhs.x; y = rhs.y; z = rhs.z; return *this; }
 		float	Length() const
 		{
 			return sqrtf(x*x + y*y + z*z);
@@ -50,6 +50,7 @@ namespace MathInterface
 		{
 			return FLOAT3(scaleFactor*vec.x, scaleFactor*vec.y, scaleFactor*vec.z);
 		}
+		FLOAT3 operator*(const float &rhs) { return FLOAT3(x*rhs, y*rhs, z*rhs); }
 		FLOAT3& operator*=(const float scaleFactor)
 		{
 			x *= scaleFactor;
@@ -229,6 +230,8 @@ namespace MathInterface
 	  FLOAT3 Clamp(const FLOAT3 & val, const FLOAT3 & min, const FLOAT3 & max);
 
 	  float Vec3_Dot(const  FLOAT3& vec1, const FLOAT3& vec2);
+
+	  FLOAT3 Vec3_Cross(const FLOAT3& vec1, const FLOAT3& vec2);
 
 	  FLOAT3 Vec3_Reflect(const FLOAT3 &vec1, const FLOAT3& norm);
 }

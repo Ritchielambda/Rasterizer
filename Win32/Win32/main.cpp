@@ -200,20 +200,21 @@ void InitializeRender()
 	//mesh->LoadTexture(L"1.bmp");
 
 	Matrix trans = MatrixTranslate(0, 10, 250);
-	mesh->SetPosition(0, 0, 15);
+	mesh->SetPosition(0, 0, 10);
 	//set camera done
 //	gCamera = new ICamera;
-	gCamera.SetPosition(10, 10, -10.0f);
+	gCamera.SetPosition(10, 5, -10.0f);
 	gCamera.SetLookAt(0, 0, 0);
-	gCamera.SetViewAngle(0.4f*3.14f, Width / Height);
+	gCamera.SetViewAngle(0.5f*3.14f, Width / Height);
 	gCamera.SetViewFrustumPlane(1.0f, 1000);
-	Matrix View = MatrixLookAtLH(QVector(10, 0, -10.0f, 0.0f), QVector(0.0f, 0.0f, 0.0f, 0.0f), QVector(0.0f, 1, 0.0f, 0.0f));
+
 	//Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
 	//Matrix WVP = world*View*Projection;
 //	render->SetWordMatrix(world);
 //	render->SetViewMatrix(View);
 //	render->SetProjMatrix(Projection);
 	//Set lighting
+
 	DirectionalLight mSceneLight;
 	// set direction lighting
 	mSceneLight.mAmbientColor = { 1.0f,1.0f,1.0f };

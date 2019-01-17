@@ -96,7 +96,7 @@ void GamePlay::QPlayer::mFunction_UpdateMovement(float timeElapsed)
 		moveVector.y += 1.0f;
 	}
 	moveVector.Normalize();
-	moveVector *= (0.2f*timeElapsed);
+	moveVector *= (0.02f*timeElapsed);
 	gCamera.fps_MoveRight(moveVector.x);
 	gCamera.fps_MoveForward(moveVector.z);
 	gCamera.fps_MoveUp(moveVector.y);

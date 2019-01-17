@@ -37,6 +37,8 @@ Matrix Matrix::operator*(const Matrix &rhs)
 		}
 	return newMatrix;
 }
+
+
 bool Matrix::operator==(const Matrix &rhs)
 {
 	bool flag = true;

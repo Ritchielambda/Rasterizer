@@ -1,6 +1,9 @@
 #include"MyGameEngine.h"
 
 using namespace MathInterface;
+#include <gdiplus.h>
+#include <iostream>
+#pragma comment(lib, "gdiplus.lib")
 Texture2D::Texture2D(int width, int height)
 {
 	m_width = width;
@@ -94,4 +97,34 @@ QVector Texture2D::Sample(const FLOAT2& tex)
 		UINT y = v * (m_height - 1);
 		return m_pixelbuffer[x][y];
 	}
+}
+void Texture2D::LoadBitmapToColorArray(std::wstring filePath)
+{
+
+	Gdiplus::GdiplusStartupInput gdiplusstartupinput;
+	ULONG_PTR gdiplustoken;
+	Gdiplus::GdiplusStartup(&gdiplustoken, &gdiplusstartupinput, nullptr);
+
+	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(filePath.c_str());
+	UINT height = bmp->GetHeight();
+	UINT width = bmp->GetWidth();
+	m_width = width;
+	m_height = height;
+	Gdiplus::Color color;
+
+	for (int y = 0; y < height; y++)
+		for (int x = 0; x < width; x++)
+		{
+			bmp->GetPixel(x, y, &color);
+
+			m_pixelbuffer[x][height - 1 - y] = MathInterface::QVector(
+				color.GetRed() / 255.f,
+				color.GetGreen() / 255.f,
+				color.GetBlue() / 255.f,
+				1.f
+			);
+		}
+	delete bmp;
+	Gdiplus::GdiplusShutdown(gdiplustoken);
+
 }

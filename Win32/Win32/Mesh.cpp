@@ -25,6 +25,52 @@ Mesh::~Mesh()
 	delete m_indexbuffer;
 	if (m_texture) delete m_texture;
 }
+void Mesh::CreatePlane(float fWidth, float fDepth, UINT iRowCount, UINT iColumnCount)
+{
+	if (iColumnCount <= 2) { iColumnCount = 2; }
+	if (iRowCount <= 2) { iRowCount = 2; }
+
+	m_vertexbuffer->clear();
+	m_indexbuffer->clear();
+
+	//delegate vert/idx creation duty to MeshGenerator 
+	mMeshGenerator.CreatePlane(fWidth, fDepth, iRowCount, iColumnCount, *m_vertexbuffer, *m_indexbuffer);
+
+}
+void Mesh::CreateBox(float fWidth, float fHeight, float fDepth, UINT iDepthStep, UINT iWidthStep, UINT iHeightStep)
+{
+
+	m_vertexbuffer->clear();
+	m_indexbuffer->clear();
+
+	//mesh creation delegate to MeshGenerator
+	mMeshGenerator.CreateBox(fWidth, fHeight, fDepth, iDepthStep, iWidthStep, iHeightStep, *m_vertexbuffer, *m_indexbuffer);
+}
+void Mesh::CreateSphere(float fRadius, UINT iColumnCount, UINT iRingCount, BOOL bInvertNormal)
+{
+	//check if the input "Step Count" is illegal
+	if (iColumnCount <= 3) { iColumnCount = 3; }
+	if (iRingCount <= 1) { iRingCount = 1; }
+
+	m_vertexbuffer->clear();
+	m_indexbuffer->clear();
+
+	//mesh creation delegate to MeshGenerator
+	mMeshGenerator.CreateSphere(fRadius, iColumnCount, iRingCount, bInvertNormal, *m_vertexbuffer, *m_indexbuffer);
+
+}
+void Mesh::CreateCylinder(float fRadius, float fHeight, UINT iColumnCount, UINT iRingCount)
+{
+	if (iColumnCount <= 3) { iColumnCount = 3; }
+	if (iRingCount <= 2) { iRingCount = 2; }
+
+	m_vertexbuffer->clear();
+	m_indexbuffer->clear();
+
+	//mesh creation delegate to MeshGenerator
+	mMeshGenerator.CreateCylinder(fRadius, fHeight, iColumnCount, iRingCount, *m_vertexbuffer, *m_indexbuffer);
+
+}
 void Mesh::Settexture(Texture2D * texture)
 {
 	m_texture = texture;//此处为深拷贝
@@ -125,6 +171,12 @@ void Mesh::GetVertexBuffer(std::vector<Vertex>& outBuff)
 	outBuff.assign(iterBegin, iterLast);
 }
 
+void Mesh::ComputeBoundingBox(BOUNDINGBOX & outBox)
+{
+	mFunction_ComputeBoundingBox();
+	outBox = mBoundingBox;
+}
+
 void Mesh::Destroy()
 {
 }
@@ -144,6 +196,97 @@ void Mesh::mFunction_UpdateWorldMatrix()
 	tmpMatrix.m[3][3] = mPosition.z;
 
 	mMatrixWorld = tmpMatrix;
+}
+
+void Mesh::mFunction_ComputeBoundingBox(std::vector<FLOAT3>* pVertexBuffer)
+{
+	mFunction_UpdateWorldMatrix();
+	//计算包围盒.......重载1
+
+	UINT i = 0;
+	FLOAT3 tmpV;
+	//遍历所有顶点，算出包围盒3分量均最 小/大 的两个顶点
+	for (i = 0; i < m_vertexbuffer->size(); i++)
+	{
+		if (i == 0)
+		{
+			mBoundingBox.min = m_vertexbuffer->at(0);
+			mBoundingBox.max = m_vertexbuffer->at(0);
+		}
+
+		//N_DEFAULT_VERTEX
+		tmpV = FLOAT3(pVertexBuffer->at(i).x, pVertexBuffer->at(i).y, pVertexBuffer->at(i).z);
+		//tmpV = Math::Matrix_Multiply(mMatrixWorld, VECTOR4(tmpV.x,tmpV.y,tmpV.z,1.0f));
+		if (tmpV.x <(mBoundingBox.min.x)) { mBoundingBox.min.x = tmpV.x; }
+		if (tmpV.y <(mBoundingBox.min.y)) { mBoundingBox.min.y = tmpV.y; }
+		if (tmpV.z <(mBoundingBox.min.z)) { mBoundingBox.min.z = tmpV.z; }
+
+		if (tmpV.x >(mBoundingBox.max.x)) { mBoundingBox.max.x = tmpV.x; }
+		if (tmpV.y >(mBoundingBox.max.y)) { mBoundingBox.max.y = tmpV.y; }
+		if (tmpV.z >(mBoundingBox.max.z)) { mBoundingBox.max.z = tmpV.z; }
+	}
+
+	mBoundingBox.max += mPosition;
+	mBoundingBox.min += mPosition;
+}
+
+void Mesh::mFunction_ComputeBoundingBox()
+{
+	mFunction_UpdateWorldMatrix();
+	//计算包围盒.......重载1
+
+	UINT i = 0;
+	FLOAT3 tmpV;
+	//遍历所有顶点，算出包围盒3分量均最 小/大 的两个顶点
+	for (i = 0; i < m_vertexbuffer->size(); i++)
+	{
+		if (i == 0)
+		{
+			mBoundingBox.min = FLOAT3(m_vertexbuffer->at(0).m_Position.x, m_vertexbuffer->at(0).m_Position.y, m_vertexbuffer->at(0).m_Position.z);
+			mBoundingBox.max = FLOAT3(m_vertexbuffer->at(0).m_Position.x, m_vertexbuffer->at(0).m_Position.y, m_vertexbuffer->at(0).m_Position.z);
+		}
+
+		//N_DEFAULT_VERTEX
+		tmpV = FLOAT3(m_vertexbuffer->at(i).m_Position.x, m_vertexbuffer->at(i).m_Position.y, m_vertexbuffer->at(i).m_Position.z);
+		//tmpV = Math::Matrix_Multiply(mMatrixWorld, VECTOR4(tmpV.x,tmpV.y,tmpV.z,1.0f));
+		if (tmpV.x <(mBoundingBox.min.x)) { mBoundingBox.min.x = tmpV.x; }
+		if (tmpV.y <(mBoundingBox.min.y)) { mBoundingBox.min.y = tmpV.y; }
+		if (tmpV.z <(mBoundingBox.min.z)) { mBoundingBox.min.z = tmpV.z; }
+
+		if (tmpV.x >(mBoundingBox.max.x)) { mBoundingBox.max.x = tmpV.x; }
+		if (tmpV.y >(mBoundingBox.max.y)) { mBoundingBox.max.y = tmpV.y; }
+		if (tmpV.z >(mBoundingBox.max.z)) { mBoundingBox.max.z = tmpV.z; }
+	}
+
+	mBoundingBox.max += mPosition;
+	mBoundingBox.min += mPosition;
+}
+
+inline FLOAT2 Mesh::mFunction_ComputeTexCoord_SphericalWrap(FLOAT3 vBoxCenter, FLOAT3 vPoint)
+{
+
+	FLOAT2 outTexCoord(0, 0);
+	FLOAT3 tmpP = vPoint - vBoxCenter;
+
+	//投影到单位球上
+	tmpP.Normalize();
+
+	//反三角函数算球坐标系坐标，然后角度值映射到[0,1]
+	float angleYaw = 0.0f;
+	float anglePitch = 0.0f;
+	float tmpLength = sqrtf(tmpP.x*tmpP.x + tmpP.z*tmpP.z);
+
+	// [ -PI/2 , PI/2 ]
+	anglePitch = atan2(tmpP.y, tmpLength);
+
+	// [ -PI	, PI ]
+	angleYaw = atan2(tmpP.z, tmpP.x);
+
+	//map to [0,1]
+	outTexCoord.x = (angleYaw + MathInterface::PI) / (2.0f * MathInterface::PI);
+	outTexCoord.y = (anglePitch + (MathInterface::PI / 2.0f)) / MathInterface::PI;
+
+	return outTexCoord;
 }
 
 bool Mesh::LoadFile_OBJ(std::wstring pFilePath)

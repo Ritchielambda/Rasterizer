@@ -58,6 +58,7 @@ public:
 	Matrix operator+(const Matrix &rhs);
 	Matrix operator-(const Matrix &rhs);
 	Matrix operator*(const Matrix &rhs);//æÿ’Û≥À∑®
+
 	bool operator==(const Matrix &rhs);
 	void Identity();//µ•Œª’Û
 	void SetZero();

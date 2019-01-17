@@ -174,7 +174,9 @@ Matrix MathInterface::MatrixPitchYawRoll(float pitch_X, float yaw_Y, float roll_
 	//outMatrix = [M_RY] x [M_RX] x [M_RZ]  
 	//(a column vector can be pre-Multiplied by this matrix)
 	Matrix outMatrix;
-	outMatrix = matRotateY*(matRotateX*matRotateZ) ;
+	outMatrix = (matRotateX*matRotateZ)*matRotateY;
+	//这尼玛  一定要先做X旋转再做Y  因为俯仰角变了 Y还是那个Y  但是你先做Yaw旋转了  再做俯仰角 就不是沿着当前的Lookat做俯仰了  fu*k
+	
 	return outMatrix;
 }
 Matrix MathInterface::MatrixLookAtLH(QVector eyePos, QVector lookAt, QVector up)
@@ -248,9 +250,20 @@ UINT MathInterface::Clamp(UINT val, UINT min, UINT max)
 	 return vec1.x*vec2.x + vec1.y*vec2.y + vec1.z*vec2.z;
  }
 
+ FLOAT3 MathInterface::Vec3_Cross(const FLOAT3 & vec1, const FLOAT3 & vec2)
+ {
+	 return FLOAT3(
+		 vec1.y*vec2.z - vec1.z*vec2.x,
+		 vec1.z*vec2.x - vec1.x*vec2.z,
+		 vec1.x*vec2.y - vec1.y*vec2.x);
+
+ }
+
  FLOAT3 MathInterface::Vec3_Reflect(const FLOAT3 & vec1, const FLOAT3 & norm)
  {
 	 FLOAT3 In = vec1;
 	 FLOAT3 Out = (-1)*In + 2 * (In - Vec3_Dot(In, norm) / In.Length()*norm);
 	 return Out;
  }
+
+
