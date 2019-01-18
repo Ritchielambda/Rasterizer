@@ -59,7 +59,7 @@ namespace MathInterface
 			return *this;
 		}
 		FLOAT3 operator*(const FLOAT3& rhs) { return FLOAT3(x*rhs.x, y*rhs.y, z*rhs.z); }
-		FLOAT3 operator-(const FLOAT3 &rhs) { return FLOAT3(x - rhs.x, y - rhs.y, z - rhs.z); }
+		FLOAT3 operator-(const FLOAT3 &rhs)const { return FLOAT3(x - rhs.x, y - rhs.y, z - rhs.z); }
 		FLOAT3& Normalize() {
 			float len = Length();
 			if (len != 0)
@@ -234,4 +234,6 @@ namespace MathInterface
 	  FLOAT3 Vec3_Cross(const FLOAT3& vec1, const FLOAT3& vec2);
 
 	  FLOAT3 Vec3_Reflect(const FLOAT3 &vec1, const FLOAT3& norm);
+
+	  bool Intersect_Ray_AABB(const FLOAT3& rayStart, const FLOAT3& rayEnd, const BOUNDINGBOX& box, FLOAT3& outIntersectPoint, bool testFrontSize);
 }

@@ -137,6 +137,35 @@ void QRender::HomoSpaceClipping_Triangles(std::vector<UINT>* const pIB)//
 
 	}
 }
+void QRender::HomoSpaceClipping_Points(std::vector<UINT>* pIB)
+{
+	*m_pIB_HomoSpace_Clipped = (*pIB);
+	*m_pVB_HomoSpace_Clipped = std::move(*m_pVB_HomoSpace_Clipped);
+
+	UINT i = 0;
+	while (i < m_pIB_HomoSpace_Clipped->size())
+	{
+		UINT idx = m_pIB_HomoSpace_Clipped->at(i);
+
+		auto const v1 = m_pVB_HomoSpace_Clipped->at(idx);
+
+		bool bOutOfBox = v1.posH.x <= -1.0f || v1.posH.x >= 1.0f ||
+			v1.posH.y <= -1.0f || v1.posH.y >= 1.0f ||
+			v1.posH.z <= 0.0f || v1.posH.z >= 1.0f;
+
+		if (bOutOfBox)
+		{
+			UINT rubbishFragmentStartIndex = m_pIB_HomoSpace_Clipped->size() - 1;
+			std::swap(m_pIB_HomoSpace_Clipped->at(i), m_pIB_HomoSpace_Clipped->at(rubbishFragmentStartIndex));
+			//then pop back the rubbish indices
+			m_pIB_HomoSpace_Clipped->pop_back();
+		}
+		else
+		{
+			++i;
+		}
+	}
+}
 COLOR4 QRender::mFunction_SampleTexture(float x, float y)
 {
 	//texture mapping disabled, diffuse color will be taken from material
@@ -222,6 +251,43 @@ void QRender::DrawTriangles(QRenderdrawcalldata & drawCallData)
 	}
 	//------------------------PRESENT----------------------------
 	Present();
+}
+
+void QRender::DrawPoint(QRenderdrawcalldata & drawCallData)
+{
+	m_pVB_HomoSpace->clear();
+	m_pVB_HomoSpace_Clipped->clear();
+	m_pIB_HomoSpace_Clipped->clear();
+	m_pVB_Rasterized->clear();
+
+	UINT offset = drawCallData.offset;
+	UINT vCount = drawCallData.VertexCount;
+	auto const pVB = drawCallData.pVertexbuffer;
+	auto const pIB = drawCallData.pIndexbuffer;
+
+	m_pVB_HomoSpace->reserve(vCount);
+	m_pVB_HomoSpace->reserve(m_bufferwidth*m_bufferheight / 3);//3 is approximate estimation
+
+	///---------------------VERTEX SHADER--------------------
+	
+	for (UINT i = offset; i < vCount; ++i)
+	{
+		Vertex& currVertex = pVB->at(offset + i);
+		// draw point use VS process every vertex
+		VertexShader(currVertex);
+	}//--------------------HOMOSPACE CLIPPINT----------------------------
+	HomoSpaceClipping_Points(pIB);
+
+	//---------------------RASTERIZER----------------------------------------
+	RasterizerPoints();
+
+	//-----------------------PIXEL SHADER------------------------------------
+
+	for (auto& rasterizedvertex : *m_pVB_Rasterized)
+	{
+		PixelShader_DrawPoints(rasterizedvertex);
+	}
+	
 }
 
 void QRender::mFunction_SetZ(UINT x, UINT y, float z)
@@ -444,6 +510,48 @@ todo
 	//rasterizer->drawtriangles()
 }
 
+void QRender::RasterizerPoints()
+{
+	for (UINT i = 0; i < m_pIB_HomoSpace_Clipped->size(); ++i)
+	{
+		RasterizedFragment outVertex;
+
+		UINT index = m_pIB_HomoSpace_Clipped->at(i);
+		const auto& v1 = m_pVB_HomoSpace_Clipped->at(index);
+
+		auto converttoPixelSpace = [&](const const VertexShaderOutput_Vertex& v, FLOAT2& outV)
+		{
+			outV.x = float(m_bufferwidth)*(v.posH.x + 1.0f) / 2.0f;
+			outV.y = float(m_bufferheight)*(v.posH.y + 1.0f) / 2.0f;
+		};
+		FLOAT2 v1_pixel;
+		converttoPixelSpace(v1, v1_pixel);
+
+		if (v1_pixel.x >= m_bufferwidth || v1_pixel.y >= m_bufferheight)
+		{
+			goto label_nextPixel;
+		}
+
+		float depth = v1.posH.z;
+		mFunction_DepthTest(v1_pixel.x, v1_pixel.y, depth);
+
+		//I will use normal bilinear interpolation to see the result first
+		outVertex.pixelX = UINT(v1_pixel.x);
+		outVertex.pixelY = UINT(v1_pixel.y);
+
+		//write to  depth buffer
+		mFunction_SetZ(outVertex.pixelX, outVertex.pixelY, depth);
+
+		//perspective correct interpolation
+		outVertex.color = v1.color;
+		outVertex.texcoord = v1.texcoord;
+
+		m_pVB_Rasterized->push_back(outVertex);
+
+	label_nextPixel:;
+	}
+}
+
 void QRender::PixelShader_DrawTriangles(RasterizedFragment &inVertex)
 {
 	//invertex.color.w actually didn't work
@@ -452,6 +560,21 @@ void QRender::PixelShader_DrawTriangles(RasterizedFragment &inVertex)
 	COLOR4 texSampleColor = mFunction_SampleTexture(inVertex.texcoord.x, inVertex.texcoord.y);
 	outColor = COLOR4(inVertex.color.x, inVertex.color.y, inVertex.color.z, inVertex.color.w) * texSampleColor;
 	m_pOutColorBuffer->at(inVertex.pixelY*m_bufferwidth + inVertex.pixelX) = outColor;
+}
+
+void QRender::PixelShader_DrawPoints(RasterizedFragment &inVertex)
+{
+	COLOR4 outColor;
+	outColor = COLOR4(inVertex.color.x, inVertex.color.y, inVertex.color.z, inVertex.color.w);
+
+	//draw a bigger point (2x2 pixel)
+	int px1 = Clamp(inVertex.pixelX - 1, 0, m_bufferwidth);
+	int px2 = Clamp(inVertex.pixelX + 1, 0, m_bufferwidth);
+	int py1 = Clamp(inVertex.pixelY - 1, 0, m_bufferheight);
+	int py2 = Clamp(inVertex.pixelY + 1, 0, m_bufferheight);
+	for (int i = px1; i < px2; i++)
+		for (int j = py1; j < py2; j++)
+			m_pOutColorBuffer->at(j*m_bufferwidth + i) = outColor;
 }
 
 bool QRender::mFunction_HorizontalIntersect(float y, const FLOAT2 & v1, const FLOAT2 & v2, const FLOAT2 & v3, UINT & outX1, UINT & outX2)
@@ -644,6 +767,33 @@ void QRender::RenderMesh(Mesh & mesh)
 	drawCallData.VertexCount = mesh.GetVertexCount();
 
 	DrawTriangles(drawCallData);
+}
+void QRender::RenderPointCollection(PointCollection & collection)
+{
+	if (m_pCamera == nullptr) return;
+	Matrix matW, matV, matP;
+	// how to update point world matrix
+	matW.Identity();
+	m_pCamera->GetViewMatrix(matV);
+	m_pCamera->GetProjMatrix(matP);
+
+
+	SetWordMatrix(matW);
+	SetViewMatrix(matV);
+	SetProjMatrix(matP);
+	SetCameraPos(m_pCamera->GetPosition());
+	SetTexure(nullptr);
+	SetLightingEnabled(false);
+
+	QRenderdrawcalldata drawCallData;
+	drawCallData.offset = 0;
+	drawCallData.pIndexbuffer = collection.m_pIB_Mem;
+	drawCallData.pVertexbuffer = collection.m_pVB_Mem;
+	drawCallData.VertexCount = collection.GetVertexCount();
+
+
+	DrawPoint(drawCallData);
+
 }
 void QRender::VertexShader(Vertex& invertex)
 {

@@ -266,4 +266,131 @@ UINT MathInterface::Clamp(UINT val, UINT min, UINT max)
 	 return Out;
  }
 
+ bool MathInterface::Intersect_Ray_AABB(const FLOAT3 & rayStart, const FLOAT3 & rayEnd, const BOUNDINGBOX & box, FLOAT3 & outIntersectPoint, bool testFrontSide)
+ {
+	 //if ray is parallel to plane
+	 FLOAT3 dir = FLOAT3(rayEnd) - rayStart;
+	 bool bPlaneXY = (dir.z != 0);
+	 bool bPlaneXZ = (dir.y != 0);
+	 bool bPlaneYZ = (dir.x != 0);
+	 
+	 std::vector<std::pair<FLOAT3, float>> intersectResult;
+
+	 auto func_isPointInArea = [](const FLOAT2& p, const FLOAT2& min, const FLOAT2& max)->bool
+	 {
+		 if (p.x >= min.x && p.x <= max.x && p.y >= min.y && p.y <= max.y)
+		 {
+			 return true;
+		 }
+		 else
+		 {
+			 return false;
+		 }
+
+	 };
+	 auto func_intersect = [&](float t, const FLOAT2 &min, const FLOAT2& max, FLOAT3 faceNorm, bool testFrontSide)
+	 {
+		 if (Vec3_Dot(faceNorm, rayEnd - rayStart) > 0.0f && testFrontSide == TRUE)
+		 {
+			 return;
+		 }
+
+		 if (t >= 0.0f && t <= 1.0f)
+		 {
+			 FLOAT3 intersectPoint = Lerp(rayStart, rayEnd, t);
+
+			 if (func_isPointInArea(
+				 FLOAT2(intersectPoint.x, intersectPoint.y),
+				 FLOAT2(min.x, min.y),
+				 FLOAT2(max.x, max.y)
+			 ) == TRUE)
+			 {
+				 intersectResult.push_back(std::make_pair(intersectPoint, t));
+			 }
+		 }
+	 };
+	 float t = 0.0f;
+	 if (bPlaneXY)
+	 {
+		 //lerp ratio 
+		 t = (box.min.z - rayStart.z) / dir.z;
+		 func_intersect(
+			 t,
+			 FLOAT2(box.min.x, box.min.y),
+			 FLOAT2(box.max.x, box.max.y),
+			 FLOAT3(0, 0, -1.0f), testFrontSide
+		 );
+
+		 t = (box.max.z - rayStart.z) / dir.z;
+		 func_intersect(t,
+			 FLOAT2(box.min.x, box.min.y),
+			 FLOAT2(box.max.x, box.max.y),
+			 FLOAT3(0, 0, 1.0f), testFrontSide
+		 );
+	 }
+
+	 if (bPlaneXZ)
+	 {
+		 //lerp ratio 
+		 t = (box.min.y - rayStart.y) / dir.y;
+		 func_intersect(t,
+			 FLOAT2(box.min.x, box.min.z),
+			 FLOAT2(box.max.x, box.max.z),
+			 FLOAT3(0, -1.0f, 0), testFrontSide
+		 );
+
+		 t = (box.max.y - rayStart.y) / dir.y;
+		 func_intersect(t,
+			 FLOAT2(box.min.x, box.min.z),
+			 FLOAT2(box.max.x, box.max.z),
+			 FLOAT3(0, 1.0f, 0), testFrontSide
+		 );
+	 }
+
+	 if (bPlaneYZ)
+	 {
+		 //lerp ratio 
+		 t = (box.min.x - rayStart.x) / dir.x;
+		 func_intersect(t,
+			 FLOAT2(box.min.y, box.min.z),
+			 FLOAT2(box.max.y, box.max.z),
+			 FLOAT3(-1.0f, 0, 0), testFrontSide
+		 );
+
+		 t = (box.max.x - rayStart.x) / dir.x;
+		 func_intersect(t,
+			 FLOAT2(box.min.y, box.min.z),
+			 FLOAT2(box.max.y, box.max.z),
+			 FLOAT3(1.0f, 0, 0), testFrontSide
+		 );
+	 }
+
+	 //no intersect point
+	 if (intersectResult.size() == 0)
+	 {
+		 outIntersectPoint = { 0,0,0 };
+		 return FALSE;
+	 }
+	 else
+	 {
+		 //find the nearest intersect result
+		 UINT nearestPointIndex = 0;
+		 for (UINT i = 0; i < intersectResult.size(); ++i)
+		 {
+			 static float smallestRatio = intersectResult.at(0).second;
+			 if (intersectResult.at(i).second<smallestRatio)
+			 {
+				 smallestRatio = intersectResult.at(i).second;
+				 nearestPointIndex = i;
+			 }
+		 }
+
+		 //finish traversal, output nearest point
+		 outIntersectPoint = intersectResult.at(nearestPointIndex).first;
+		 return true;
+	 }
+
+	 return false;
+ }
+
 

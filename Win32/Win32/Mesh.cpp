@@ -210,8 +210,9 @@ void Mesh::mFunction_ComputeBoundingBox(std::vector<FLOAT3>* pVertexBuffer)
 	{
 		if (i == 0)
 		{
-			mBoundingBox.min = m_vertexbuffer->at(0);
-			mBoundingBox.max = m_vertexbuffer->at(0);
+			FLOAT3 pos = FLOAT3(m_vertexbuffer->at(0).m_Position.x, m_vertexbuffer->at(0).m_Position.y, m_vertexbuffer->at(0).m_Position.z);
+			mBoundingBox.min = pos;
+			mBoundingBox.max = pos;
 		}
 
 		//N_DEFAULT_VERTEX
@@ -301,12 +302,12 @@ bool Mesh::LoadFile_OBJ(std::wstring pFilePath)
 bool Mesh::LoadTexture(std::wstring pFilePath)
 {
 	bool fileLoadSucceeded = false;
-	m_texture = FileLoader::LoadBitmapToColorArray(pFilePath);
+	m_texture->LoadBitmapToColorArray(pFilePath);
 	if (!fileLoadSucceeded)return false;
 	return true;
 
 }
-
++
 void Mesh::SetMaterial(const Material & material)
 {
 	mMaterial = material;

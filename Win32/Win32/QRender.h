@@ -49,6 +49,9 @@ public:
 	
 	void RenderMesh(Mesh & mesh);
 
+	void RenderPointCollection(PointCollection& collection);
+
+
 	//there is no need to provide these two interface , rendere will be call only render mesh,
 	//class QRender don't need to save input data
 	//void SetVertexbuffer(int Vertexsize, std::vector<Vertex>* data);
@@ -102,11 +105,19 @@ private:
 
 	void HomoSpaceClipping_Triangles(std::vector<UINT>* const pIB);
 
+	void	HomoSpaceClipping_Points(std::vector<UINT>* pIB);
+
 	void DrawTriangles(QRenderdrawcalldata & drawCallData);
+
+	void DrawPoint(QRenderdrawcalldata & drawCallData);
 
 	void RasterizeTriangles();
 
+	void RasterizerPoints();
+
 	void PixelShader_DrawTriangles(RasterizedFragment&);
+
+	void PixelShader_DrawPoints(RasterizedFragment&);
 
 	void Present();
 

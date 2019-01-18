@@ -12,9 +12,12 @@ public:
 	UINT GetWidth() {return m_width;}
 	UINT GetHeight() { return m_height; }
 	QVector GetPixel(UINT x, UINT y) { return m_pixelbuffer[x][y]; }
+	void LoadBitmapToColorArray(std::wstring filePath);
 public:
+
 	//mem
 	UINT m_width;
 	UINT m_height;
 	QVector ** m_pixelbuffer;
+
 };
