@@ -1,5 +1,4 @@
-#include"Base_GameObject.h"
-#include"MathInterface.h"
+#include"MyGameEngine.h"
 using namespace MathInterface;
 
 GamePlay::Base_GameObject::Base_GameObject(float initialHealth):mHP(initialHealth)

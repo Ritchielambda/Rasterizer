@@ -1,7 +1,9 @@
 #pragma once
 #include"MyGameEngine.h"
+#include "Chicken.h"
 #include "Asteroid.h"
 #include"player.h"
+#include"SceneEnvironment.h"
 namespace GamePlay
 {
 	const float c_halfMovementRestrictBoxWidth = 800.0f;

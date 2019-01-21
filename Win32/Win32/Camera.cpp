@@ -1,4 +1,4 @@
-#include"Camera.h"
+#include"MyGameEngine.h"
 using namespace MathInterface;
 ICamera::ICamera()
 {
@@ -6,10 +6,10 @@ ICamera::ICamera()
 	mRotateY_Yaw = 0;
 	mRotateZ_Roll = 0;
 	mViewAngleY = 60.0f / 180.0f * MathInterface::PI;
-	mAspectRatio = 4/3;
+	mAspectRatio = 4.0/3.0;
 	mPosition = FLOAT3(0, 0, -8);
 	mLookat = FLOAT3(0, 0, 0);
-	mDirection = FLOAT3(0, 0, 1);
+	mDirection = FLOAT3(0, 0, 8);
 	mNearPlane = 1.0f;
 	mFarPlane = 1000.0f;
 
@@ -49,7 +49,7 @@ void	ICamera::SetPosition(float x, float y, float z)
 	FLOAT3 tmpPos(x, y, z);
 	mPosition = tmpPos;
 	mFunction_UpdateRotation();
-};
+}
 
 FLOAT3 ICamera::GetPosition()
 {
@@ -58,17 +58,17 @@ FLOAT3 ICamera::GetPosition()
 FLOAT3 ICamera::GetDirection()
 {
 	return mLookat - mPosition;
-};
+}
 void ICamera::Move(FLOAT3 vRelativePos)
 {
 	mPosition += vRelativePos;
 	mLookat += vRelativePos;
 
-};
+}
 void ICamera::Move(float relativeX, float relativeY, float relativeZ)
 {
 	mPosition += FLOAT3(relativeX, relativeY, relativeZ);
-};
+}
 
 void ICamera::SetRotation(float RX_Pitch, float RY_Yaw, float RZ_Roll)//要更新Lookat
 {
@@ -76,19 +76,19 @@ void ICamera::SetRotation(float RX_Pitch, float RY_Yaw, float RZ_Roll)//要更新Lo
 	SetRotationY_Yaw(RY_Yaw);
 	SetRotationZ_Roll(RZ_Roll);
 	mFunction_UpdateDirection();
-};
+}
 void ICamera::SetRotationY_Yaw(float angleY)
 {
 	mRotateY_Yaw = angleY;
 	mFunction_UpdateDirection();
-};
+}
 void ICamera::SetRotationX_Pitch(float AngleX)
 {
 	//clamp to [-pi/2,pi/2]
 	mRotateX_Pitch = Clamp(AngleX, -(PI / 2), (PI / 2));
 
 	mFunction_UpdateDirection();
-};
+}
 void ICamera::SetRotationZ_Roll(float AngleZ)
 {
 	//roll翻滚不需要更新lookat
@@ -112,20 +112,20 @@ void ICamera::RotateY_Yaw(float angleY)
 {
 	SetRotationY_Yaw(mRotateY_Yaw + angleY);
 	mFunction_UpdateDirection();
-};
+}
 
 void ICamera::RotateX_Pitch(float angleX)
 {
-	float newAngle = mRotateX_Pitch + angleX;
-	SetRotationX_Pitch(newAngle);
+//	float newAngle = mRotateX_Pitch + angleX;
+	SetRotationX_Pitch(mRotateX_Pitch + angleX);
 	mFunction_UpdateDirection();
-};
+}
 
 void ICamera::RotateZ_Roll(float angleZ)
 {
 	SetRotationZ_Roll(mRotateZ_Roll + angleZ);
 	mFunction_UpdateDirection();
-};
+}
 void ICamera::fps_MoveForward(float fSignedDistance, BOOL enableYAxisMovement)
 {
 	//...Yaw Angle Starts at Z axis ( left-handed system) 
@@ -279,7 +279,6 @@ void	ICamera::mFunction_UpdateRotation()
 	if (mLength<0.001f)
 	{
 		// 按道理来说这里不会出现视点和位置重合的情况 因为改变方向 视点也会动
-		// 不会float误差一直减小这么坑爹吧
 		mRotateX_Pitch = 0;
 		mRotateY_Yaw = 0;
 		mRotateZ_Roll = 0;
@@ -338,4 +337,5 @@ void	ICamera::mFunction_UpdateDirection()
 	mDirection.z = tmpDirectionLength* cos(mRotateY_Yaw)*cos(mRotateX_Pitch);
 	mDirection.y = -tmpDirectionLength* sin(mRotateX_Pitch);
 	mLookat = mPosition + mDirection;
+
 };

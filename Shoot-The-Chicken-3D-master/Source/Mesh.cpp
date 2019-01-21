@@ -70,7 +70,7 @@ void IMesh::CreateBox(float fWidth,float fHeight,float fDepth,UINT iDepthStep,UI
 }
 
 void	IMesh::CreateSphere(float fRadius,UINT iColumnCount, UINT iRingCount, BOOL bInvertNormal)
-{
+{	
 	//check if the input "Step Count" is illegal
 	if(iColumnCount <= 3)	{iColumnCount =3;}
 	if(iRingCount <= 1)		{iRingCount = 1;}

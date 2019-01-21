@@ -345,7 +345,8 @@ void	ICamera::mFunction_UpdateRotation()
 	}
 
 	//yaw角： tan = -x/z
-		mRotateY_Yaw = atan2(mDirection.x,mDirection.z);//俯视图yaw是顺时针正角
+
+	mRotateY_Yaw = atan2(mDirection.x,mDirection.z);//俯视图yaw是顺时针正角
 
 	//roll角：更新direction不会改变roll角 
 	//roll逆时针转是正角

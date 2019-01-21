@@ -146,7 +146,7 @@ void IGeometryMeshGenerator::CreateSphere(float fRadius, UINT iColumnCount, UINT
 	float	tmpX,tmpY,tmpZ,tmpRingRadius;
 
 	//Calculate the Step length (²½³¤)
-	float	StepLength_AngleY =		Math::CONST_PI / (iRingCount +1); // distances between each level (ring)
+	float	StepLength_AngleY =		CONST_PI / (iRingCount +1); // distances between each level (ring)
 	float StepLength_AngleXZ =		2* Math::CONST_PI / iColumnCount;
 
 	UINT k = 0;//for iteration

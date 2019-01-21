@@ -1,6 +1,6 @@
 #pragma once
 
-#include"MathInterface.h"
+
 class ICamera
 {
 public:
@@ -76,8 +76,8 @@ private:
 	FLOAT3		mLookat;
 	FLOAT3		mDirection;
 
-	Matrix mMatrixView;
-	Matrix	mMatrixProjection;
+	Matrix      mMatrixView;
+	Matrix	    mMatrixProjection;
 
 	float			mRotateX_Pitch;
 	float			mRotateY_Yaw;

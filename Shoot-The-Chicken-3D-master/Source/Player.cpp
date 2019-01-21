@@ -176,7 +176,7 @@ void IPlayer::mFunction_UpdateMovement(float timeElapsed)
 	static const int scrHeight = ::GetSystemMetrics(SM_CYSCREEN);
 	lastCursorPos = currentCursorPos;
 	::GetCursorPos(&currentCursorPos);
-
+	
 	//if cursor reach the boundary, go to another side
 	if (currentCursorPos.x == scrWidth - 1)
 	{

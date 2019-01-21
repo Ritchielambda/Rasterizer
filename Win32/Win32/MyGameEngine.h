@@ -25,7 +25,7 @@
 
 #include"QTimer.h"
 #include"Base_GameObject.h"
-#include"player.h"
+
 #include "BulletMgr.h"
 
 
