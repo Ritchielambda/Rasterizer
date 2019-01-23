@@ -11,7 +11,8 @@ namespace GamePlay
 	QPlayer							gPlayer;
 	UINT						gFPS = 0;
 	HWND						hwnd = NULL;
-
+	int						gRootGameState;
+	Menus					gMenus;
 }	
 void GamePlay::MainGame()
 {

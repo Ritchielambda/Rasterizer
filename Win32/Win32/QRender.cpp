@@ -201,11 +201,16 @@ void QRender::ClearZbuffer()
 	}
 }
 
-void QRender::ClearScreen(COLOR4 clearColor)
+void QRender::ClearScreen(COLOR4 clearColor = {0,0,0,0},bool Z = true)
 {
 	for (UINT i = 0; i < m_bufferheight*m_bufferwidth; ++i)
 	{
 		m_pOutColorBuffer->at(i) = clearColor;
+	}
+	for (UINT i = 0; i < (*m_pZBuffer).size(); ++i)
+	{
+		//  after homogeneous space transform ,1 is biggest Z
+		(*m_pZBuffer)[i] = Z;
 	}
 }
 

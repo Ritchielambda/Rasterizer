@@ -19,7 +19,7 @@ public:
 
 	void ClearZbuffer();
 
-	void ClearScreen(COLOR4 clearColor);
+	void ClearScreen(COLOR4 clearColor = { 0,0,0,0 }, bool Z = true);
 	
 	void SetWordMatrix(Matrix wordMatrix);
 
