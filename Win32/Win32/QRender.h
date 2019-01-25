@@ -45,6 +45,10 @@ public:
 
 	HDC GetHDC();
 
+	void DrawRect(FLOAT2 lefttopPos, int width, int height,COLOR4 color);
+
+	bool DrawPicture(Texture2D& texture,UINT x1,UINT y1,UINT x2,UINT y2);
+
 	void QRender::SetTexcoordTransform(float dx, float dy, float scale);
 	
 	void RenderMesh(Mesh & mesh);
@@ -114,6 +118,8 @@ private:
 	void RasterizeTriangles();
 
 	void RasterizerPoints();
+
+	void mFunction_SetPixel(UINT width, UINT height, COLOR4 color);
 
 	void PixelShader_DrawTriangles(RasterizedFragment&);
 

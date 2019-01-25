@@ -4,7 +4,9 @@ const float GamePlay::QPlayer::c_halfPlayerWidth = 25.0f;
 const float GamePlay::QPlayer::c_halfPlayerHeight = 35.0f;
 const float GamePlay::QPlayer::c_halfPlayerDepth = 25.0f;
 
-GamePlay::QPlayer::QPlayer() :Base_GameObject(c_playerInitalHealth)
+GamePlay::QPlayer::QPlayer(BulletManager* bulletmgr) 
+	:m_pBulletMgr(bulletmgr),
+	Base_GameObject(c_playerInitalHealth)
 {
 
 }
@@ -23,12 +25,13 @@ void GamePlay::QPlayer::Init()
 void GamePlay::QPlayer::Update()
 {
 	mFunction_UpdateMovement(gTimeElapsed);
-	//TODO  FIRE
+	mFunction_Fire(gTimeElapsed);
 
 }
 
 void GamePlay::QPlayer::Render()
 {
+	//this interface for create third person game
 }
 
 void GamePlay::QPlayer::GetBoundingBox(MathInterface::BOUNDINGBOX & outBox)
@@ -58,14 +61,44 @@ FLOAT3 GamePlay::QPlayer::GetPrevPosition()
 	return mLastPos;
 }
 
-float GamePlay::QPlayer::InitialHealth() const
+float GamePlay::QPlayer::GetInitialHealth() const
 {
 	return c_playerInitalHealth;
 }
 
 void GamePlay::QPlayer::mFunction_Fire(float timeElapsed)
 {
-	//todo
+	static float fireCoolingDownTime = 0.0f;
+
+	static const float fireTimeCoolDownThreshold = 100.0f;
+	fireCoolingDownTime += timeElapsed;
+
+	if (fireCoolingDownTime >= fireTimeCoolDownThreshold)
+	{
+		FLOAT3 unitCamera = gCamera.GetDirection().Normalize();
+		FLOAT3 vel_Bullet = unitCamera;
+
+		float gunDistanceFromplayer = 0.0f;
+		//incase bullets collide with self bounding box
+		float gunDistanceFromMainAxis = min(c_halfPlayerWidth, c_halfPlayerDepth) - 1.0f;
+
+		FLOAT3 pos_Bullet1 = mCurrentPos +
+			FLOAT3(gunDistanceFromMainAxis*cos(gCamera.GetRotationY_Yaw()), 0, -gunDistanceFromMainAxis*sin(gCamera.GetRotationY_Yaw()));
+
+		//left gun
+		FLOAT3 pos_Bullet2 = mCurrentPos +
+			FLOAT3(-gunDistanceFromMainAxis*cos(gCamera.GetRotationY_Yaw()), 0, gunDistanceFromMainAxis*sin(gCamera.GetRotationY_Yaw()));
+
+		//-----------------Spawn Bullet------------------
+
+		//right bullet
+		m_pBulletMgr->SpawnBullet(pos_Bullet1, vel_Bullet*0.8f, { (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f });
+		//left bullet
+		m_pBulletMgr->SpawnBullet(pos_Bullet2, vel_Bullet*0.8f, { (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f });
+
+		//reset cool down time
+		fireCoolingDownTime = 0.0f;
+	}
 }
 
 void GamePlay::QPlayer::mFunction_UpdateMovement(float timeElapsed)

@@ -13,8 +13,9 @@ namespace GamePlay
 	HWND						hwnd = NULL;
 	int						gRootGameState;
 	Menus					gMenus;
+	MainGame				gMainGame;
 }	
-void GamePlay::MainGame()
+void GamePlay::fMainGame()
 {
 	localTimer.NextTick();
 	gTimeElapsed = Clamp(localTimer.GetInterval(), 0.0f, 100.0f);

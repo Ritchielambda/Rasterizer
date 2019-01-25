@@ -30,7 +30,7 @@ void GamePlay::Menus::UpdateAndRender_StartMenu()
 			startMenuState = GameState::StartMenu::GS_Choose_Quit;
 			Sleep(300);
 		}
-		//draw picture todo
+		gRenderer.DrawPicture(mMainMenuBgr_Start, 0, 0, width, height);
 	}
 	break;
 	case GameState::StartMenu::GS_Choose_Quit:
@@ -46,7 +46,7 @@ void GamePlay::Menus::UpdateAndRender_StartMenu()
 			startMenuState = GameState::StartMenu::GS_Choose_Start;
 			Sleep(300);
 		}
-		////draw picture todo
+		gRenderer.DrawPicture(mMainMenuBgr_Exit, 0, 0, width, height);
 	}break;
 	default:
 		break;
@@ -67,9 +67,15 @@ void GamePlay::Menus::UpdateAndRender_StartChooseScene()
 	{
 	case GameState::ChooseSceneMenu::GS_Cosmos:
 	{
-		//init main game todo
-		gRootGameState = GameState::GS_MainGame;
-		Sleep(300);
+	
+
+		if (IS_KEY_DOWN(VK_RETURN))
+		{
+			gMainGame.Init(SCENE_TYPE::SCENE_COSMOS1);
+			gRootGameState = GameState::GS_MainGame;
+			Sleep(300);
+		}
+
 		if (IS_KEY_DOWN(VK_LEFT))
 		{
 			chooseSceneMenuState = GameState::ChooseSceneMenu::GS_CheckerBoard;
@@ -81,16 +87,17 @@ void GamePlay::Menus::UpdateAndRender_StartChooseScene()
 			chooseSceneMenuState = GameState::ChooseSceneMenu::GS_CheckerBoard;
 			Sleep(300);
 		}
-		//draw picture todo
+		gRenderer.DrawPicture(mChooseSceneBrg_Cosmos, 0, 0, width, height);
 
 	}break;
 	case GameState::ChooseSceneMenu::GS_CheckerBoard:
 	{
 		//SCENE2: CHECKERBOARD 格子世界
+
 		if (IS_KEY_DOWN(VK_RETURN))
 		{
-			//maingame todo
-			//gMainGame.Init(SCENE_TYPE::SCENE_CHECKERBOARD);
+
+			gMainGame.Init(SCENE_TYPE::SCENE_CHECKERBOARD);
 			gRootGameState = GameState::GS_MainGame;
 			Sleep(300);
 		};
@@ -107,7 +114,7 @@ void GamePlay::Menus::UpdateAndRender_StartChooseScene()
 			chooseSceneMenuState = GameState::ChooseSceneMenu::GS_Cosmos;
 			Sleep(300);
 		}
-		//drawpicture todo
+		gRenderer.DrawPicture(mChooseSceneBrg_Checkerboard, 0, 0, width, height);
 	}break;
 	default:
 		break;

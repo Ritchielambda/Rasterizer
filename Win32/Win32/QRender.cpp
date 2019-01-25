@@ -201,7 +201,7 @@ void QRender::ClearZbuffer()
 	}
 }
 
-void QRender::ClearScreen(COLOR4 clearColor = {0,0,0,0},bool Z = true)
+void QRender::ClearScreen(COLOR4 clearColor,bool Z)
 {
 	for (UINT i = 0; i < m_bufferheight*m_bufferwidth; ++i)
 	{
@@ -410,11 +410,7 @@ COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vN
 
 void QRender::RasterizeTriangles()
 {
-/************************************************************
 
-todo
-
-************************************************************/
 	for (UINT tri = 0; tri < m_pIB_HomoSpace_Clipped->size() - 2; tri += 3)
 	{
 		UINT idx1 = m_pIB_HomoSpace_Clipped->at(tri);
@@ -555,6 +551,11 @@ void QRender::RasterizerPoints()
 
 	label_nextPixel:;
 	}
+}
+
+void QRender::mFunction_SetPixel(UINT width, UINT height, COLOR4 color)
+{
+	m_pOutColorBuffer->at(height*m_bufferwidth + width) = color;
 }
 
 void QRender::PixelShader_DrawTriangles(RasterizedFragment &inVertex)
@@ -738,6 +739,53 @@ HDC QRender::GetHDC()
 {
 	return m_hdc;
 
+}
+void QRender::DrawRect(FLOAT2 LTPercentage, int width, int height,COLOR4 color)
+{
+	if (LTPercentage.x >= 1 || LTPercentage.y >= 1)
+	{
+		DEBUG_MSG1("Draw rect LTPercentage wrong!")
+	}
+	UINT width = GetBufferwidth();
+	UINT height = GetBufferheight();
+	FLOAT2 StartPos = { LTPercentage.x*width,LTPercentage.y*height };
+	for (UINT i = StartPos.x; i < StartPos.x + width; ++i)
+	{
+		for (UINT j = StartPos.y; j < StartPos.y + height; ++j)
+		{
+			m_pOutColorBuffer->at(j*width+i) = color;
+		}
+	}
+}
+bool QRender::DrawPicture(Texture2D &texture, UINT x1, UINT y1, UINT x2, UINT y2)
+{
+	x1 = Clamp(x1,0, GetBufferwidth() - 1);
+	x2 = Clamp(x2, 0, GetBufferwidth() - 1);
+	y1 = Clamp(y1, 0, GetBufferwidth() - 1);
+	y2 = Clamp(y2, 0, GetBufferwidth() - 1);
+
+	if (x1 >= x2 || y1 >= y2)
+	{
+		DEBUG_MSG1("drawpicture region wrong");
+		return false;
+	}
+	UINT drawRegionWidth = x2 - x1 + 1;
+	UINT drawRegionHeight = y2 - y1 + 1;
+
+	//because Minification/Magnification could occur, we must find the 
+	//x/y ratio coord first to filter
+	for (UINT i = x1; i < x2; ++i)
+	{
+		float x_ratio = float(i - x1) / drawRegionWidth;
+		for (UINT j = y1; j < y2; ++j)
+		{
+			float y_ratio = float(j - y1) / drawRegionHeight;
+			UINT picCoordX = UINT(x_ratio*texture.GetWidth());
+			UINT picCoordY = UINT(y_ratio*texture.GetHeight());
+			mFunction_SetPixel(i, j, texture.GetPixel(picCoordX, picCoordY));
+		}
+	}
+	return true;
 }
 void QRender::SetTexcoordTransform(float dx, float dy, float scale)
 {

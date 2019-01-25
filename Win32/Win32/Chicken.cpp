@@ -4,7 +4,7 @@ using namespace GamePlay;
 static float movePatternTimeCounter = 0.0f;
 
 static float attackPatternTimeCounter = 0.0f;
-Gameplay::ChickenMonster::ChickenMonster(BulletManager * pBulletMgr)
+GamePlay::ChickenMonster::ChickenMonster(BulletManager * pBulletMgr)
 	:m_pBulletMgr(pBulletMgr),
 	m_AttackState(CHICKEN_ATTACK_STATE_CHASE_PLAYER),
 	Base_GameObject(c_chickenInitialHealth)// private member is still valid?  it didnt be derived
@@ -19,14 +19,14 @@ Gameplay::ChickenMonster::ChickenMonster(BulletManager * pBulletMgr)
 	mMat_Common.specular = { 0.5f,0.5f,0.5f };
 }
 
-void Gameplay::ChickenMonster::Init(SCENE_TYPE modelID)
+void GamePlay::ChickenMonster::Init(SCENE_TYPE modelID)
 {
 	switch (modelID)
 	{
 	case SCENE_TYPE::SCENE_COSMOS1:
 		mTexture_Common.LoadBitmapToColorArray(L"chicken.bitmap");
 		break;
-	case SCENE_TYPE::SCENE_CHECKERBORAR:
+	case SCENE_TYPE::SCENE_CHECKERBOARD:
 		mTexture_Common.LoadBitmapToColorArray(L"chicken.bitmap");
 		break;
 	}
@@ -45,32 +45,38 @@ void Gameplay::ChickenMonster::Init(SCENE_TYPE modelID)
 	attackPatternTimeCounter = 0.0f;
 }
 
-void Gameplay::ChickenMonster::Render()
+void GamePlay::ChickenMonster::Update(const FLOAT3 & playerpos)
+{
+	mFunction_UpdateMovement(playerpos);
+	mFunction_UpdateTexture();
+}
+
+void GamePlay::ChickenMonster::Render()
 {
 	gRenderer.RenderMesh(mMesh);
 }
 
-void Gameplay::ChickenMonster::GetBoundingBox(BOUNDINGBOX & outBox)
+void GamePlay::ChickenMonster::GetBoundingBox(BOUNDINGBOX & outBox)
 {
 	mMesh.ComputeBoundingBox(outBox);
 }
 
-void Gameplay::ChickenMonster::BeHitAndChangeColor()
+void GamePlay::ChickenMonster::BeHitAndChangeColor()
 {
 	mMatType = CHICKEN_MATERIAL_TYPE_HIT;
 }
 
-FLOAT3 Gameplay::ChickenMonster::Getposition()
+FLOAT3 GamePlay::ChickenMonster::Getposition()
 {
 	return mPos;
 }
 
-float Gameplay::ChickenMonster::GetInitialHealth() const
+float GamePlay::ChickenMonster::GetInitialHealth() const
 {
 	return c_chickenInitialHealth;
 }
 
-void Gameplay::ChickenMonster::mFunction_UpdateMovement(const FLOAT3 & playerPos)
+void GamePlay::ChickenMonster::mFunction_UpdateMovement(const FLOAT3 & playerPos)
 {
 	movePatternTimeCounter += gTimeElapsed;
 
@@ -159,10 +165,97 @@ void Gameplay::ChickenMonster::mFunction_UpdateMovement(const FLOAT3 & playerPos
 	mMesh.SetPosition(mPos);
 }
 
-void Gameplay::ChickenMonster::mFunction_Fire(FLOAT3 firePos)
+void GamePlay::ChickenMonster::mFunction_Fire(FLOAT3 shootDir)
 {
+	//different types of bullets have various cool down time
+	const float fireTimeThreshold_common = 500.0f;
+	const float fireTimeThreshold_rotate1 = 200.0f;
+	const float fireTimeThreshold_rotate2 = 300.0f;
+	const float fireTimeThreshold_explode = 2000.0f;
+	static std::default_random_engine rndEngine;
+	static std::uniform_real_distribution<float> dirDist1(-0.1f, 0.1f);
+	static std::uniform_real_distribution<float> dirDist2(-0.5f, 0.5f);
+	static std::uniform_real_distribution<float> dirDist3(-1.0f, 1.0f);
+	attackPatternTimeCounter += gTimeElapsed;
+
+	switch (m_AttackState)
+	{
+	case CHICKEN_ATTACK_STATE_CHASE_PLAYER:
+	{	if (attackPatternTimeCounter > fireTimeThreshold_common)
+	{
+		shootDir.Normalize();
+		FLOAT3 dir = shootDir + FLOAT3(dirDist1(rndEngine), dirDist2(rndEngine), dirDist3(rndEngine));
+		m_pBulletMgr->SpawnBullet(mPos, dir*0.5f, FLOAT3(1.0f, 0.0, 0.0));
+	}
+
+	attackPatternTimeCounter = 0.0f;
+	}
+	break;
+	case CHICKEN_ATTACK_STATE_TYPE1:
+	{
+		if (attackPatternTimeCounter > fireTimeThreshold_rotate1)
+		{
+			shootDir.Normalize();
+			for (int i = 0; i < 20; ++i)
+			{
+				FLOAT3 dir = { shootDir.x,0,shootDir.z };
+
+				dir.y += ((-10 + i)*0.1f);
+				dir.Normalize();
+				m_pBulletMgr->SpawnBullet(mPos, dir*0.5f, FLOAT3(1.0f, 0, 0));
+			}
+		}
+		attackPatternTimeCounter = 0.0f;
+	}
+	break;
+	case CHICKEN_ATTACK_STATE_TYPE2:
+	{
+		shootDir.Normalize();
+
+		for (int i = 0; i < 20; ++i)
+		{
+			FLOAT3 dir = shootDir + FLOAT3(dirDist2(rndEngine), dirDist2(rndEngine), dirDist2(rndEngine));
+			m_pBulletMgr->SpawnBullet(mPos, dir, FLOAT3(0, 1.0f, 0));
+		}
+		attackPatternTimeCounter = 0.0f;
+	}
+	case CHICKEN_ATTACK_STATE_ULTIMATE_EXPLODE:
+	{
+		shootDir.Normalize();
+		for (int i = 0; i < 1000; i++)
+		{
+			FLOAT3 dir = shootDir + FLOAT3(dirDist1(rndEngine), dirDist2(rndEngine), dirDist3(rndEngine));
+			dir.Normalize();
+			m_pBulletMgr->SpawnBullet(mPos, dir, FLOAT3(1.0f, 0, 0));
+		}
+		attackPatternTimeCounter = 0.0f;
+	}
+	break;
+	default:
+		break;
+	}
+
 }
 
-void Gameplay::ChickenMonster::mFunction_UpdateTexture()
+void GamePlay::ChickenMonster::mFunction_UpdateTexture()
 {
+	const float c_colorChangeMaxTime = 50.0f;
+	static float colorChangeTime = 0.0f;
+
+	if (mMatType == CHICKEN_MATERIAL_TYPE_HIT)
+	{
+		mMesh.SetMaterial(mMat_Red);
+
+		colorChangeTime += gTimeElapsed;
+		if (colorChangeTime > c_colorChangeMaxTime)
+		{
+			mMatType = CHICKEN_MATERIAL_TYPE_COMMON;
+			colorChangeTime = 0.0f;
+		}
+
+	}
+	else
+	{
+		mMesh.SetMaterial(mMat_Common);
+	}
 }

@@ -1,10 +1,17 @@
 #pragma once
 #include"MyGameEngine.h"
 #include "Menus.h"
-#include "Chicken.h"
+#include"Base_GameObject.h"
+#include "BulletMgr.h"
 #include "Asteroid.h"
-#include"player.h"
 #include"SceneEnvironment.h"
+#include "Chicken.h"
+#include"MainGameLogic.h"
+
+#include"player.h"
+
+#include "MainGameLogic.h"
+
 namespace GamePlay
 {
 	const float c_halfMovementRestrictBoxWidth = 800.0f;
@@ -56,8 +63,9 @@ namespace GamePlay
 	extern ICamera				gCamera;
 	extern float					gTimeElapsed;
 	extern QPlayer							gPlayer;
+	extern 	MainGame				gMainGame;
 	extern UINT					gFPS;
 	extern HWND					hwnd;
-	void MainGame();
+	void fMainGame();
 	
 }

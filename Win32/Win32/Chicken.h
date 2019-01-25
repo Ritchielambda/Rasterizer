@@ -1,5 +1,5 @@
 #pragma once
-namespace Gameplay
+namespace GamePlay
 {
 	enum CHICKEN_MATERIAL_TYPE
 	{
@@ -20,7 +20,9 @@ namespace Gameplay
 	public:
 		ChickenMonster(BulletManager* pBulletMgr);
 
-		void Init(SCENE_TYPE modelID);//todo SCENETYPE
+		void Init(SCENE_TYPE modelID);
+
+		void Update(const FLOAT3& playpos);
 
 		void Render();
 

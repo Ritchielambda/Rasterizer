@@ -5,7 +5,7 @@ namespace GamePlay
 	{
 	public:
 
-		QPlayer();//todo  bullet
+		QPlayer(BulletManager* BulletMgr);
 
 		void Init();
 		
@@ -19,7 +19,7 @@ namespace GamePlay
 
 		FLOAT3 GetPrevPosition();
 
-		float InitialHealth() const;
+		float GetInitialHealth() const;
 
 	private:
 
@@ -30,8 +30,8 @@ namespace GamePlay
 		void mFunction_UpdateMovement(float timeElapsed);
 		
 
-		//todo bullet func
 
+		BulletManager*	const m_pBulletMgr;
 		FLOAT3 mLastPos;
 
 		FLOAT3 mCurrentPos;

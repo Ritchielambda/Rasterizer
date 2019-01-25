@@ -307,7 +307,7 @@ bool Mesh::LoadTexture(std::wstring pFilePath)
 	return true;
 
 }
-+
+
 void Mesh::SetMaterial(const Material & material)
 {
 	mMaterial = material;
