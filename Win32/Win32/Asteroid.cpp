@@ -13,13 +13,13 @@ void GamePlay::Asteroid::Init(UINT AsteroidType)
 	switch (UINT(AsteroidType))
 	{
 	case AsteroidType_Rock1:
-		mMesh.LoadFile_OBJ(L"rock1.obj");
+		mMesh.LoadFile_OBJ(L"Media/rock2.obj");
 		break;
 	case AsteroidType_Rock2:
-		mMesh.LoadFile_OBJ(L"rock2.obj");
+		mMesh.LoadFile_OBJ(L"Media/rock2.obj");
 		break;
 	case AsteroidType_Rock3:
-		mMesh.LoadFile_OBJ(L"rock3.obj");
+		mMesh.LoadFile_OBJ(L"Media/rock3.obj");
 		break;
 	case AsteroidType_Box:
 	default:
@@ -27,7 +27,7 @@ void GamePlay::Asteroid::Init(UINT AsteroidType)
 		mMesh.CreateBox(width, width, width, 3, 3, 3);
 		break;
 	}
-	mTexture.LoadBitmapToColorArray(L"rock.bitmap");
+	mTexture.LoadBitmapToColorArray(L"Media/rock.BMP");
 	
 	Material mat;
 	mat.ambient = { 0.3f,0.3f,0.3f };

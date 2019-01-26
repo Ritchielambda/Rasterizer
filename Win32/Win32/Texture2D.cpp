@@ -110,9 +110,18 @@ void Texture2D::LoadBitmapToColorArray(std::wstring filePath)
 	UINT width = bmp->GetWidth();
 	m_width = width;
 	m_height = height;
+	if (m_pixelbuffer == nullptr)
+	{
+		m_pixelbuffer = new QVector*[m_width];
+		for (int i = 0; i < m_width; ++i)
+		{
+			m_pixelbuffer[i] = new QVector[m_height];
+		}
+	}
 	Gdiplus::Color color;
 
 	for (int y = 0; y < height; y++)
+	{
 		for (int x = 0; x < width; x++)
 		{
 			bmp->GetPixel(x, y, &color);
@@ -124,6 +133,7 @@ void Texture2D::LoadBitmapToColorArray(std::wstring filePath)
 				1.f
 			);
 		}
+	}
 	delete bmp;
 	Gdiplus::GdiplusShutdown(gdiplustoken);
 

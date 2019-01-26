@@ -6,7 +6,7 @@
 #include "Asteroid.h"
 #include"SceneEnvironment.h"
 #include "Chicken.h"
-#include"MainGameLogic.h"
+
 
 #include"player.h"
 
@@ -62,10 +62,41 @@ namespace GamePlay
 	extern QRender				gRenderer;
 	extern ICamera				gCamera;
 	extern float					gTimeElapsed;
-	extern QPlayer							gPlayer;
+//	extern QPlayer							gPlayer;
 	extern 	MainGame				gMainGame;
 	extern UINT					gFPS;
-	extern HWND					hwnd;
+	extern HWND					ghwnd;
+
+
+
+	void						InitGlobal();
+
+	void UpdateWindowTitle();
+
+	void	GameStateSelector();
+
+	void StartAnimation();
+
+	void StartMenu();
+
+	void ChooseSceneMenu();
+
 	void fMainGame();
 	
+	
 }
+const int WindowWidth = 800;	//window width
+const int WindowHeight = 600;	//window height
+bool InitializeWindow(HINSTANCE hInstance,	//Initialize our window
+	int ShowWnd,
+	int width, int height,
+	bool windowed);
+//void drawpixeltest();
+int messageloop();	//Main part of the program
+
+LRESULT CALLBACK WndProc(HWND hWnd,	//Windows callback procedure
+	UINT msg,
+	WPARAM wParam,
+	LPARAM lParam);
+
+extern LPCTSTR WndClassName;	//Define our window class name

@@ -76,9 +76,11 @@ void QRender::SetWVP(const Matrix& mat)
 	WVP = mat;
 }
 
-void QRender::Present()
+void QRender::Present(HWND& rhwnd)
 {
 	mFunction_UpdateBitMapBuffer();
+	HDC hdc = GetDC(rhwnd);
+	BitBlt(hdc, 0, 0, GetBufferwidth(), GetBufferheight(), GetHDC(), 0, 0, SRCCOPY);
 	
 }
 void QRender::toCVV(Vertex& vertex)
@@ -255,7 +257,7 @@ void QRender::DrawTriangles(QRenderdrawcalldata & drawCallData)
 		PixelShader_DrawTriangles(rasterizedVertex);
 	}
 	//------------------------PRESENT----------------------------
-	Present();
+	//Present();
 }
 
 void QRender::DrawPoint(QRenderdrawcalldata & drawCallData)
@@ -746,14 +748,12 @@ void QRender::DrawRect(FLOAT2 LTPercentage, int width, int height,COLOR4 color)
 	{
 		DEBUG_MSG1("Draw rect LTPercentage wrong!")
 	}
-	UINT width = GetBufferwidth();
-	UINT height = GetBufferheight();
-	FLOAT2 StartPos = { LTPercentage.x*width,LTPercentage.y*height };
+	FLOAT2 StartPos = { LTPercentage.x*m_bufferwidth,LTPercentage.y*m_bufferheight };
 	for (UINT i = StartPos.x; i < StartPos.x + width; ++i)
 	{
 		for (UINT j = StartPos.y; j < StartPos.y + height; ++j)
 		{
-			m_pOutColorBuffer->at(j*width+i) = color;
+			m_pOutColorBuffer->at(j*m_bufferwidth +i) = color;
 		}
 	}
 }
@@ -761,8 +761,8 @@ bool QRender::DrawPicture(Texture2D &texture, UINT x1, UINT y1, UINT x2, UINT y2
 {
 	x1 = Clamp(x1,0, GetBufferwidth() - 1);
 	x2 = Clamp(x2, 0, GetBufferwidth() - 1);
-	y1 = Clamp(y1, 0, GetBufferwidth() - 1);
-	y2 = Clamp(y2, 0, GetBufferwidth() - 1);
+	y1 = Clamp(y1, 0, GetBufferheight() - 1);
+	y2 = Clamp(y2, 0, GetBufferheight() - 1);
 
 	if (x1 >= x2 || y1 >= y2)
 	{
@@ -786,6 +786,66 @@ bool QRender::DrawPicture(Texture2D &texture, UINT x1, UINT y1, UINT x2, UINT y2
 		}
 	}
 	return true;
+}
+void QRender::DrawLine(COLOR4 color, UINT x1, UINT y1, UINT x2, UINT y2)
+{
+	if (x1 == x2)
+	{
+		//if slope doesn't exist
+		for (UINT j = y1; j <= y2; j++)
+		{
+			mFunction_SetPixel(x1, j, color);//pixel outside the boundary won't be drawn
+		}
+	}
+	else
+	{
+
+		float	k = float(int(y2) - int(y1)) / float(int(x2) - int(x1));
+		float k_inv = 1 / k;
+		//bresenham-like line drawing
+
+		//two circumstances
+		//1. abs(slope)>=1; 
+		//2. abs(slope)<=1;
+		float offset = 0.0f;
+		if (abs(k) <= 1.0f)
+		{
+			UINT i = x1;
+
+			while (i != x2)
+			{
+				//UINT() forced type conversion will truncate the fraction part
+				mFunction_SetPixel(i, y1 + UINT(offset), color);
+
+				//anti-alising
+				//mFunction_BlendPixel(i, y1 + UINT(offset)+ 1,  fractionPart(offset),color);
+				offset += k;//dy = dx * k;
+
+				if (x2 > x1)++i; else --i;
+			}
+		}
+		else
+		{
+			UINT j = y1;
+			while (j != y2)
+			{
+				mFunction_SetPixel(x1 + UINT(offset), j, color);
+
+				//anti-alising
+				//mFunction_BlendPixel(x1+UINT(offset) +1,j, fractionPart(offset),color);
+				offset += (k_inv);
+
+				if (y2 > y1)
+				{
+					++j;
+				}
+				else
+				{
+					--j;
+				}
+			}
+		}
+	}
 }
 void QRender::SetTexcoordTransform(float dx, float dy, float scale)
 {

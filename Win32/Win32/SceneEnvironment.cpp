@@ -12,16 +12,16 @@ void GamePlay::SceneModelManager::Init(SCENE_TYPE model)
 	{
 	case SCENE_TYPE::SCENE_COSMOS1:
 		{
-		mSkyTexture.LoadBitmapToColorArray(L"universe.bitmap");//put bitmap to a folder  todo
+		mSkyTexture.LoadBitmapToColorArray(L"Media/universe.BMP");
 		mSkyModel.CreateSphere(2000.0f, 20, 20, TRUE);
 		for (UINT i = 0; i < c_asteroidCount; ++i)
 		{
 			mAsteroid[i].Init((i % 3));
 		}
 		}break;
-	case SCENE_TYPE::SCENE_CHECKERBORAR:
+	case SCENE_TYPE::SCENE_CHECKERBOARD:
 	{
-		mSkyTexture.LoadBitmapToColorArray(L"checkerBoard.bitmap");
+		mSkyTexture.LoadBitmapToColorArray(L"Media/checkerBoard.BMP");
 
 		mSkyModel.CreateSphere(2000, 20, 20, TRUE);
 		for (UINT i = 0; i < c_asteroidCount; ++i)
@@ -46,7 +46,7 @@ void GamePlay::SceneModelManager::Init(SCENE_TYPE model)
 	mSceneLight.mSpecularIntensity = 1.2f;
 
 	gRenderer.SetLighting(0, mSceneLight);
-	//cursor pos  todo
+	SetCursorPos(0, 0);
 
 }
 

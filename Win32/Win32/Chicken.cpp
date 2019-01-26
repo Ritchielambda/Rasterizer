@@ -24,14 +24,14 @@ void GamePlay::ChickenMonster::Init(SCENE_TYPE modelID)
 	switch (modelID)
 	{
 	case SCENE_TYPE::SCENE_COSMOS1:
-		mTexture_Common.LoadBitmapToColorArray(L"chicken.bitmap");
+		mTexture_Common.LoadBitmapToColorArray(L"Media/chicken.BMP");
 		break;
 	case SCENE_TYPE::SCENE_CHECKERBOARD:
-		mTexture_Common.LoadBitmapToColorArray(L"chicken.bitmap");
+		mTexture_Common.LoadBitmapToColorArray(L"Media/checkerBoard.BMP");
 		break;
 	}
 
-	mMesh.LoadFile_OBJ(L"chicken.obj");
+	mMesh.LoadFile_OBJ(L"Media/chicken.obj");
 	mPos = FLOAT3(0, 0, 0);
 	mLookat = FLOAT3(100.0f, -100.f, 0.0f);
 

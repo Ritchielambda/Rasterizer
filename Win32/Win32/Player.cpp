@@ -14,6 +14,7 @@ GamePlay::QPlayer::QPlayer(BulletManager* bulletmgr)
 void GamePlay::QPlayer::Init()
 {
 	//set cursorpos
+	::SetCursorPos(0, 0);
 	gCamera.SetPosition(0.0f, 0.0f, -8.0f);
 	gCamera.SetLookAt(0.0f, 0.0f, 0.0f);
 	gCamera.SetViewAngle(MathInterface::PI / 2.0f, 4.0f / 3.0f);

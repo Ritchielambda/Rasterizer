@@ -49,6 +49,8 @@ public:
 
 	bool DrawPicture(Texture2D& texture,UINT x1,UINT y1,UINT x2,UINT y2);
 
+	void DrawLine(COLOR4 color, UINT x1, UINT y1, UINT x2, UINT y2);
+
 	void QRender::SetTexcoordTransform(float dx, float dy, float scale);
 	
 	void RenderMesh(Mesh & mesh);
@@ -56,13 +58,15 @@ public:
 	void RenderPointCollection(PointCollection& collection);
 
 
+	void Present(HWND& hwnd);
+
 	//there is no need to provide these two interface , rendere will be call only render mesh,
 	//class QRender don't need to save input data
 	//void SetVertexbuffer(int Vertexsize, std::vector<Vertex>* data);
 
 	//void SetIndexbuffer(int Indexsize, std::vector<int> *data);
 
-
+	
 
 	void toCVV(Vertex& vertex);
 
@@ -125,7 +129,7 @@ private:
 
 	void PixelShader_DrawPoints(RasterizedFragment&);
 
-	void Present();
+
 
 
 

@@ -39,10 +39,10 @@ void GamePlay::MainGame::Init(SCENE_TYPE modelID)
 		break;
 	}
 	
-	mPauseMenuBgr_Continue.LoadBitmapToColorArray(L"");
-	mPauseMenuBgr_Back.LoadBitmapToColorArray(L"");
-	mGameOverMenuBgr_Lose.LoadBitmapToColorArray(L"");
-	mGameOverMenuBgr_Win.LoadBitmapToColorArray(L"");//todo put bitmap to a folder
+	mPauseMenuBgr_Continue.LoadBitmapToColorArray(L"Media/GUI/PauseMenu_Continue.BMP");
+	mPauseMenuBgr_Back.LoadBitmapToColorArray(L"Media/GUI/PauseMenu_Back.BMP");
+	mGameOverMenuBgr_Lose.LoadBitmapToColorArray(L"Media/GUI/GameOver_Win.BMP");
+	mGameOverMenuBgr_Win.LoadBitmapToColorArray(L"Media/GUI/GameOver_Lose.BMP");
 }
 
 void GamePlay::MainGame::UpdateAndRenderMainGame()
@@ -106,7 +106,7 @@ void GamePlay::MainGame::mFunction_UpdateAndRenderStartAnimaton()
 		mSceneMgr.Render();
 		mChickenBoss.Render();
 
-		//present todo ? is it necessary?
+		gRenderer.Present(ghwnd);
 	}
 	else
 	{
@@ -152,15 +152,18 @@ void GamePlay::MainGame::mFunction_UpdateAndRenderPlaying()
 	//---------------HUD----------------------------------------
 	//player blood bar
 	UINT bloodBarWidth = UINT(50 * mPlayer.GetHP() / mPlayer.GetInitialHealth());
-	gRenderer.DrawRect(FLOAT2{ 0.2,0.2 }, bloodBarWidth, 5, COLOR4(1, 0, 0, 0));
+	gRenderer.DrawRect(FLOAT2{ 0.2f,0.2f }, bloodBarWidth, 5, COLOR4(1, 0, 0, 0));
 
 	UINT chickenBloodBarWidth = UINT(80.0f*(mChickenBoss.GetHP() / mChickenBoss.GetInitialHealth()));
-	gRenderer.DrawRect(FLOAT2{ 0.3,0.2 }, bloodBarWidth, 5, COLOR4(1, 1, 0, 0));
-	//todo draw cross
+	gRenderer.DrawRect(FLOAT2{ 0.3f,0.2f }, bloodBarWidth, 5, COLOR4(1, 1, 0, 0));
+
+
+
 	UINT width = gRenderer.GetBufferwidth();
 	UINT height = gRenderer.GetBufferheight();
-
-	//todo  present
+	gRenderer.DrawLine({ 1.0f,1.0f,1.0f,1.0f }, width / 2 - 4, height / 2, width / 2 + 4, height / 2);
+	gRenderer.DrawLine({ 1.0f,1.0f,1.0f,1.0f }, width / 2, height / 2 - 4, width / 2, height / 2 + 4);
+	gRenderer.Present(ghwnd);
 }
 
 void GamePlay::MainGame::mFunction_UpdateAndRender_GameOverMenu(BOOL hasWon)
@@ -191,7 +194,7 @@ void GamePlay::MainGame::mFunction_UpdateAndRender_GameOverMenu(BOOL hasWon)
 			Sleep(300);
 		}
 	}
-	//todo present
+	gRenderer.Present(ghwnd);
 }
 
 void GamePlay::MainGame::mFunction_UpdateAndRender_PauseMenu()
@@ -246,7 +249,7 @@ void GamePlay::MainGame::mFunction_UpdateAndRender_PauseMenu()
 
 		break;
 	}
-	//todo present
+	gRenderer.Present(ghwnd);
 }
 
 void GamePlay::MainGame::mFunction_UpdateAndRenderDeathExplode()
@@ -259,7 +262,7 @@ void GamePlay::MainGame::mFunction_UpdateAndRenderDeathExplode()
 		mChickenBoss.Render();
 		mSceneMgr.Render();
 
-		//present todo
+		gRenderer.Present(ghwnd);
 	}
 	//time to enjoy watching the explosion
 	if (deathExplodeTimeCounter > 1000.0f&&deathExplodeTimeCounter < 3000.0f)
@@ -272,7 +275,7 @@ void GamePlay::MainGame::mFunction_UpdateAndRenderDeathExplode()
 		mSceneMgr.Render();
 		mBulletMgr.UpdateBullets();
 		mBulletMgr.Render();
-		//todo present
+		gRenderer.Present(ghwnd);
 	}
 	if (deathExplodeTimeCounter > 3000.0f)
 	{
@@ -300,7 +303,7 @@ void GamePlay::MainGame::mFunction_CollisionDetectionAndInteract()
 
 	}
 	//clear point list in funcs
-	mBulletMgr.collisionDection.collisionDection(chickenAABB, true, collidePointList);
+	mBulletMgr.collisionDection(chickenAABB, true, collidePointList);
 	if (collidePointList.size() != 0)
 	{
 		mChickenBoss.ReduceHP(5.0f);

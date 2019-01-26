@@ -2,10 +2,10 @@
 
 void GamePlay::Menus::Init()
 {
-	mMainMenuBgr_Start.LoadBitmapToColorArray(L"bitmap");
-	mMainMenuBgr_Exit.LoadBitmapToColorArray(L"bitmap");
-	mChooseSceneBrg_Cosmos.LoadBitmapToColorArray(L"bitmap");
-	mChooseSceneBrg_Checkerboard.LoadBitmapToColorArray(L"bitmap");
+	mMainMenuBgr_Start.LoadBitmapToColorArray(L"Media/GUI/MainMenu_start.BMP");
+	mMainMenuBgr_Exit.LoadBitmapToColorArray(L"Media/GUI/MainMenu_Exit.BMP");
+	mChooseSceneBrg_Cosmos.LoadBitmapToColorArray(L"Media/GUI/ChooseScene_Cosmos.BMP");
+	mChooseSceneBrg_Checkerboard.LoadBitmapToColorArray(L"Media/GUI/ChooseScene_checkerB.BMP");
 }
 
 void GamePlay::Menus::UpdateAndRender_StartMenu()
@@ -51,7 +51,7 @@ void GamePlay::Menus::UpdateAndRender_StartMenu()
 	default:
 		break;
 	}
-	//grender.present
+	gRenderer.Present(ghwnd);
 }
 
 void GamePlay::Menus::UpdateAndRender_StartChooseScene()
@@ -119,5 +119,5 @@ void GamePlay::Menus::UpdateAndRender_StartChooseScene()
 	default:
 		break;
 	}
-	//grender.present todo
+	gRenderer.Present(ghwnd);
 }
