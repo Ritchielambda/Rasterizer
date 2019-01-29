@@ -5,6 +5,7 @@ namespace GamePlay
 	{
 	public:
 
+		QPlayer() :Base_GameObject(c_playerInitalHealth) { m_pBulletMgr = new BulletManager; }
 		QPlayer(BulletManager* BulletMgr);
 
 		void Init();
@@ -31,7 +32,7 @@ namespace GamePlay
 		
 
 
-		BulletManager*	const m_pBulletMgr;
+		BulletManager*	 m_pBulletMgr;
 		FLOAT3 mLastPos;
 
 		FLOAT3 mCurrentPos;

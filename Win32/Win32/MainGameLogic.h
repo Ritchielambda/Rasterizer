@@ -35,7 +35,7 @@ namespace GamePlay
 		BulletManager				mBulletMgr;
 		int								mMainGameState;
 		BOOL							mIsPlayerVictorious;//has player won??
-
+		
 		Texture2D				mPauseMenuBgr_Continue;
 		Texture2D				mPauseMenuBgr_Back;
 

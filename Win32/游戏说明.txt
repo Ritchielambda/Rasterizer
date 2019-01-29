@@ -1,0 +1,24 @@
+游戏名称：《射死大鸡怪》
+
+游戏平台：Windows
+
+版本:v1.0
+
+原作者：鸡哥
+改造：LiQi
+控制说明：
+
+- W 	向前
+- S 	向后
+- A 	向左
+- D 	向右
+- SPACE 向上
+- LCTRL	向下
+
+原作在window控制台上实现，本辣鸡花了两个月又在windows编程窗口下 复刻了一遍
+本项目只用作学习用途，顺便熟悉了整个渲染管道，练习了C++整个项目的调试和框架的搭建。
+膜拜大佬。
+原作Github
+https://github.com/CHINA-JIGE/
+
+	https://github.com/CHINA-JIGE/Shoot-The-Chicken-3D

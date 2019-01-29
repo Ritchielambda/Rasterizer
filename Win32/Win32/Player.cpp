@@ -15,9 +15,9 @@ void GamePlay::QPlayer::Init()
 {
 	//set cursorpos
 	::SetCursorPos(0, 0);
-	gCamera.SetPosition(0.0f, 0.0f, -8.0f);
-	gCamera.SetLookAt(0.0f, 0.0f, 0.0f);
-	gCamera.SetViewAngle(MathInterface::PI / 2.0f, 4.0f / 3.0f);
+	gCamera.SetPosition(200.0f, 150.0f, 200.0f);
+	gCamera.SetLookAt(0, 0, 0);
+	gCamera.SetViewAngle(MathInterface::PI / 2.0f, 2.5f);
 	gCamera.SetViewFrustumPlane(1.0f, 2500.0f);
 	Base_GameObject::SetHP(c_playerInitalHealth);
 	
@@ -130,7 +130,7 @@ void GamePlay::QPlayer::mFunction_UpdateMovement(float timeElapsed)
 		moveVector.y += 1.0f;
 	}
 	moveVector.Normalize();
-	moveVector *= (0.02f*timeElapsed);
+	moveVector *= (0.2f*timeElapsed);
 	gCamera.fps_MoveRight(moveVector.x);
 	gCamera.fps_MoveForward(moveVector.z);
 	gCamera.fps_MoveUp(moveVector.y);

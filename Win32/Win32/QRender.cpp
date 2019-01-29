@@ -7,7 +7,8 @@ QRender::QRender(HWND handle, UINT width,UINT height)
 	//rasterizer = new Rasterizer(handle, width, height);
 	rendermode = fillmode;
 	Mat_Screen = MathInterface::MatrixScreenTransform(m_bufferwidth,m_bufferheight);
-
+	// hide cursor
+	ShowCursor(false);
 	m_pVB_HomoSpace = new std::vector<VertexShaderOutput_Vertex>;
 	m_pVB_HomoSpace_Clipped = new std::vector<VertexShaderOutput_Vertex>;
 	m_pIB_HomoSpace_Clipped = new std::vector<UINT>;
@@ -142,7 +143,7 @@ void QRender::HomoSpaceClipping_Triangles(std::vector<UINT>* const pIB)//
 void QRender::HomoSpaceClipping_Points(std::vector<UINT>* pIB)
 {
 	*m_pIB_HomoSpace_Clipped = (*pIB);
-	*m_pVB_HomoSpace_Clipped = std::move(*m_pVB_HomoSpace_Clipped);
+	*m_pVB_HomoSpace_Clipped = std::move(*m_pVB_HomoSpace);
 
 	UINT i = 0;
 	while (i < m_pIB_HomoSpace_Clipped->size())
@@ -178,7 +179,8 @@ COLOR4 QRender::mFunction_SampleTexture(float x, float y)
 	UINT height = m_pTexture->GetHeight();
 	float pixelX = abs(width * (float(x - UINT(x))));
 	float pixelY = abs(height * (float(y - UINT(y))));
-	return m_pTexture->GetPixel(UINT(pixelX), UINT(pixelY));
+	COLOR4 tmpcolor =  m_pTexture->GetPixel(UINT(pixelX), UINT(pixelY));
+	return tmpcolor;
 }
 inline bool QRender::mFunction_DepthTest(UINT x, UINT y, float testZ)
 {
@@ -305,22 +307,7 @@ void QRender::mFunction_SetZ(UINT x, UINT y, float z)
 void QRender::mFunction_UpdateBitMapBuffer()
 {
 
-	/////--------------------------used for PRESENT------------------------------------------------------
 
-
-	//为什么这里获得的HDC不是我创建的windows屏幕的表面
-
-	/////--------------------------used for PRESENT------------------------------------------------------
-
-	///test bitmap code---------------------------------------------------
-	//Texture2D texture = MathInterface::LoadBitmapToColorArray(L"2.bmp");
-	//for (int i = 0; i < texture.m_height; ++i)
-	//{
-	//	for (int j = 0; j < texture.m_width; ++j)
-	//	{
-	//		m_BitMapBuffer[i*texture.m_width + j] = QVectorConverttoINT(texture.m_pixelbuffer[j][i]);
-	//	}
-	//}
 
 
 	for (int i = 0; i < (*m_pOutColorBuffer).size(); ++i)
@@ -372,41 +359,58 @@ COLOR4 QRender::mFunction_VertexLighting(const FLOAT3 & vPosW, const FLOAT3 & vN
 	{
 		if (mDirLight[i].mIsEnabled)
 		{
+			//normalized light vector
 			FLOAT3 unitIncomingLightVec = mDirLight[i].mDirection;
 			unitIncomingLightVec.Normalize();
 
+			//vector from current vertex to Camera(Eye),used when compute specular
 			FLOAT3 toEye = m_CameraPos - vPosW;
 			toEye.Normalize();
 
+			//unit vertex normal
+			FLOAT3 unitNormal = vNormalW;
+			unitNormal.Normalize();
 
+			//Ambient Color
 			FLOAT3 currentAmbient = m_Material.ambient* mDirLight[i].mAmbientColor * m_Material.diffuse;
-			FLOAT3 currentdiffuse = { 0,0,0 };
-			FLOAT3 currentspeculat = { 0,0,0 };
 
+			//diffuse Factor (first make sure that angle <normal,light> is less than PI/2
+			FLOAT3 currentDiffuse = { 0,0,0 };
+			FLOAT3 currentSpecular = { 0,0,0 };
 
-			
-			float diffusefactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, unitNormal);
-			vec_diffusefactor.push_back(diffusefactor);
-			if (diffusefactor > 0.0f)
+			float diffuseFactor = mDirLight[i].mDiffuseIntensity*MathInterface::Vec3_Dot((-1)*unitIncomingLightVec, unitNormal);
+			if (diffuseFactor > 0.0f)
 			{
-				currentdiffuse = diffusefactor *mDirLight[i].mDiffuseColor;
+				//diffuse color (eye pos independent)
+				currentDiffuse = diffuseFactor * mDirLight[i].mDiffuseColor;
+
+				//if Texture Mapping is disabled, then use pure diffuse color of material
 				if (m_pTexture == nullptr)
 				{
-					currentdiffuse = currentdiffuse * m_Material.diffuse;
+					//component-wise
+					currentDiffuse = currentDiffuse * m_Material.diffuse;
 				}
+				//else the color will be passed down to pixel shader to multiply by 
+				//per-pixel sample diffuse color
 
-				FLOAT3 unitOutgoingLightVec = MathInterface::Vec3_Reflect(unitIncomingLightVec, unitNormal);
-				//specular color
-				float SpecFactor =
-					mDirLight[i].mSpecularIntensity * pow(max(MathInterface::Vec3_Dot(unitOutgoingLightVec, toEye), 0.0f), m_Material.specularSmoothLevel);
-				//currentspeculat = SpecFactor * m_Material.specular*mDirLight[i].mSpecularColor;
+
+				//Specular color - eye position dependent
+				/*VECTOR3 unitOutgoingLightVec = Vec3_Reflect(unitIncomingLightVec, unitNormal);
+				float specFactor =
+				mDirLight[i].mSpecularIntensity *
+				pow(max(Vec3_Dot(unitOutgoingLightVec, toEye), 0.0f), mMaterial.specularSmoothLevel);
+
+				//Vector3 * vector3 means component-wise mult , return vec3(x1*x2,y1*y2,z1*z2)
+				currentSpecular = specFactor* mMaterial.specular * mDirLight[i].mSpecularColor;*/
+
 			}
-			FLOAT3 outColor3 = currentAmbient + currentdiffuse + currentspeculat;
+
+			FLOAT3 outColor3 = currentAmbient + currentDiffuse + currentSpecular;
 			outColor += COLOR4(outColor3.x, outColor3.y, outColor3.z, 0.0f);
+
 		}
 
 	}
-
 	return outColor;
 }
 
@@ -536,7 +540,7 @@ void QRender::RasterizerPoints()
 		}
 
 		float depth = v1.posH.z;
-		mFunction_DepthTest(v1_pixel.x, v1_pixel.y, depth);
+		if(mFunction_DepthTest(UINT(v1_pixel.x),UINT( v1_pixel.y), depth)==false) goto label_nextPixel;
 
 		//I will use normal bilinear interpolation to see the result first
 		outVertex.pixelX = UINT(v1_pixel.x);
@@ -575,11 +579,11 @@ void QRender::PixelShader_DrawPoints(RasterizedFragment &inVertex)
 	COLOR4 outColor;
 	outColor = COLOR4(inVertex.color.x, inVertex.color.y, inVertex.color.z, inVertex.color.w);
 
-	//draw a bigger point (2x2 pixel)
-	int px1 = Clamp(inVertex.pixelX - 1, 0, m_bufferwidth);
-	int px2 = Clamp(inVertex.pixelX + 1, 0, m_bufferwidth);
-	int py1 = Clamp(inVertex.pixelY - 1, 0, m_bufferheight);
-	int py2 = Clamp(inVertex.pixelY + 1, 0, m_bufferheight);
+	//draw a bigger point (4x4 pixel)
+	int px1 = Clamp(inVertex.pixelX - 2, 0, m_bufferwidth);
+	int px2 = Clamp(inVertex.pixelX + 2, 0, m_bufferwidth);
+	int py1 = Clamp(inVertex.pixelY - 2, 0, m_bufferheight);
+	int py2 = Clamp(inVertex.pixelY + 2, 0, m_bufferheight);
 	for (int i = px1; i < px2; i++)
 		for (int j = py1; j < py2; j++)
 			m_pOutColorBuffer->at(j*m_bufferwidth + i) = outColor;
@@ -870,7 +874,9 @@ void QRender::RenderMesh(Mesh & mesh)
 	SetProjMatrix(matP);
 	SetCameraPos(m_pCamera->GetPosition());
 	SetMaterial(mesh.mMaterial);
+	//if (mesh.m_texture->m_width == 0) DEBUG_MSG1("render mesh texture size wrong !");
 	SetTexure(mesh.m_texture);
+
 	SetLightingEnabled(true);
 
 	QRenderdrawcalldata drawCallData;
@@ -914,18 +920,18 @@ void QRender::VertexShader(Vertex& invertex)
 	QVector pos(invertex.m_Position.x, invertex.m_Position.y, invertex.m_Position.z,1.0f);
 	pos = pos *WorldMatrix;
 	pos = pos *ViewMatrix;
-
+	float Z_ViewSpace = pos.z;
 	//float Z_ViewSpace = pos.z;
 	pos = pos*ProjMatrix;
-	//if (Z_ViewSpace >= 0)
-	//{
-	//	pos.x /= (Z_ViewSpace);
-	//	pos.y /= (Z_ViewSpace);
-	//}
-	pos.x = pos.x / pos.w;
-	pos.y = pos.y / pos.w;
-	pos.z = pos.z / pos.w;
-	pos.w = 1.0f;
+
+	if (Z_ViewSpace >= 0)
+	{
+		pos.x = pos.x / pos.w;
+		pos.y = pos.y / pos.w;
+		pos.z = pos.z / pos.w;
+		pos.w = 1.0f;
+	}
+	
 	outVertex.posH = pos;
 	//Matrix WorldMat_Trans = MathInterface::MatrixInverse(WorldMatrix);
 	//WorldMat_Trans = MathInterface::MatrixTranspose(WorldMat_Trans);

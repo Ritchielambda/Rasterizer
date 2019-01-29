@@ -11,7 +11,7 @@ public:
 	QVector Sample(const FLOAT2& tex);
 	UINT GetWidth() {return m_width;}
 	UINT GetHeight() { return m_height; }
-	QVector GetPixel(UINT x, UINT y) { return m_pixelbuffer[x][y]; }
+	QVector& GetPixel(UINT x, UINT y) { return m_pixelbuffer[x][y]; }
 	void LoadBitmapToColorArray(std::wstring filePath);
 public:
 

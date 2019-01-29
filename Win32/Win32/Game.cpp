@@ -6,15 +6,17 @@ LPCTSTR WndClassName = L"firstwindow";	//Define our window class name
 namespace GamePlay
 {
 	QRender				gRenderer(ghwnd,800,600);
-
+	RECT				windowsrect;
 	ICamera				gCamera;
 	float						gTimeElapsed = 0.0f;
-//	QPlayer							gPlayer;
+	QPlayer							gPlayer;
 	UINT						gFPS = 0;
 	HWND						ghwnd = NULL;
 	int						gRootGameState;
 	Menus					gMenus;
 	MainGame				gMainGame;
+
+	Mesh				teapot;
 }	
 void GamePlay::InitGlobal()
 {
@@ -26,6 +28,10 @@ void GamePlay::InitGlobal()
 }
 void GamePlay::UpdateWindowTitle()
 {
+	//GetWindowRect(ghwnd, &windowsrect);
+	//SetCursorPos(windowsrect.left + abs(windowsrect.right - windowsrect.left) / 2, windowsrect.top + abs(windowsrect.top - windowsrect.bottom) / 2);
+	std::string str = "Shoot The Chicken 3D - By Li modified from Ji FPS:" + std::to_string(gFPS);
+	SetWindowTextA(ghwnd, str.c_str());
 }
 void GamePlay::GameStateSelector()
 {
@@ -40,8 +46,7 @@ void GamePlay::GameStateSelector()
 	case GameState::GS_MainGame:
 		fMainGame(); break;
 	default:
-		DEBUG_MSG1("game state error");
-		exit(0);
+
 		break;
 	}
 }
@@ -135,8 +140,8 @@ int messageloop() {	//The message loop
 		//if there was a windows message
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT)	//if the message was WM_QUIT
-				break;	//Exit the message loop
+		//	if (msg.message == WM_QUIT)	//if the message was WM_QUIT
+		//		break;	//Exit the message loop
 
 			TranslateMessage(&msg);	//Translate the message
 
@@ -145,7 +150,9 @@ int messageloop() {	//The message loop
 		}
 
 		else {	//Otherewise, keep the flow going
+			UpdateWindowTitle();
 			GamePlay::GameStateSelector();
+			//drawpixeltest();
 		}
 
 
@@ -183,4 +190,55 @@ LRESULT CALLBACK WndProc(HWND hwnd,	//Default windows procedure
 		msg,
 		wParam,
 		lParam);
+}
+
+
+void drawpixeltest()
+{
+	localTimer.NextTick();
+	gTimeElapsed = Clamp(localTimer.GetInterval(), 0.0f, 100.0f);
+	gFPS = localTimer.GetFPS();
+	gRenderer.ClearScreen();
+	//teapot.RotateY_Yaw(PI/100);
+	gRenderer.RenderMesh(teapot);
+	gPlayer.Update();
+	gRenderer.Present(ghwnd);
+}
+
+void InitializeRender()
+{
+
+	//teapot.CreateSphere(20,20,20,TRUE);
+	teapot.CreateBox(20,20,20,3,3,3);
+	teapot.m_texture = new Texture2D;
+	teapot.LoadTexture(L"1.BMP");
+	
+
+	teapot.SetPosition(0,0, 20);
+	//set camera done
+	//	gCamera = new ICamera;
+	gCamera.SetPosition(0, 0, -8.0f);
+	gCamera.SetLookAt(0, 0, 0);
+	gCamera.SetViewAngle(0.5f*3.14f, 800 / 600);
+	gCamera.SetViewFrustumPlane(1.0f, 2500);
+
+	//Matrix Projection = MatrixPerspectiveFovLH(0.4f*3.14f, Width/Height, 1, 1000);
+	//Matrix WVP = world*View*Projection;
+	//	render->SetWordMatrix(world);
+	//	render->SetViewMatrix(View);
+	//	render->SetProjMatrix(Projection);
+	//Set lighting
+
+	DirectionalLight mSceneLight;
+	// set direction lighting
+	mSceneLight.mAmbientColor = { 1.0f,1.0f,1.0f };
+	mSceneLight.mDiffuseColor = { 1.0f,.96f,1.0f };
+	mSceneLight.mDiffuseIntensity = 1.0f;
+	mSceneLight.mDirection = { -1,-1.0f,1.0f };
+	mSceneLight.mIsEnabled = TRUE;
+	mSceneLight.mSpecularColor = { 1.0f,1.0f,1.0f };
+	mSceneLight.mSpecularIntensity = 0.7f;
+	gRenderer.SetLighting(0, mSceneLight);
+	gRenderer.SetCamera(gCamera);
+
 }

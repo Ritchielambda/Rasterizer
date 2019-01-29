@@ -41,8 +41,8 @@ void GamePlay::MainGame::Init(SCENE_TYPE modelID)
 	
 	mPauseMenuBgr_Continue.LoadBitmapToColorArray(L"Media/GUI/PauseMenu_Continue.BMP");
 	mPauseMenuBgr_Back.LoadBitmapToColorArray(L"Media/GUI/PauseMenu_Back.BMP");
-	mGameOverMenuBgr_Lose.LoadBitmapToColorArray(L"Media/GUI/GameOver_Win.BMP");
-	mGameOverMenuBgr_Win.LoadBitmapToColorArray(L"Media/GUI/GameOver_Lose.BMP");
+	mGameOverMenuBgr_Lose.LoadBitmapToColorArray(L"Media/GUI/GameOver_Lose.BMP");
+	mGameOverMenuBgr_Win.LoadBitmapToColorArray(L"Media/GUI/GameOver_Win.BMP");
 }
 
 void GamePlay::MainGame::UpdateAndRenderMainGame()
@@ -102,9 +102,9 @@ void GamePlay::MainGame::mFunction_UpdateAndRenderStartAnimaton()
 		gRenderer.ClearScreen();
 		gCamera.SetPosition(Lerp(camPos, c_CameraTargetPos, gTimeElapsed*0.001f));
 		gCamera.SetLookAt(Lerp(cameLookat, c_CameraTargetLookat, gTimeElapsed*0.001f));
-
+		mSceneMgr.Update();
 		mSceneMgr.Render();
-		mChickenBoss.Render();
+		//mChickenBoss.Render();
 
 		gRenderer.Present(ghwnd);
 	}
@@ -152,17 +152,17 @@ void GamePlay::MainGame::mFunction_UpdateAndRenderPlaying()
 	//---------------HUD----------------------------------------
 	//player blood bar
 	UINT bloodBarWidth = UINT(50 * mPlayer.GetHP() / mPlayer.GetInitialHealth());
-	gRenderer.DrawRect(FLOAT2{ 0.2f,0.2f }, bloodBarWidth, 5, COLOR4(1, 0, 0, 0));
+	gRenderer.DrawRect(FLOAT2{ 0.1f,0.9f }, bloodBarWidth*3, 30, COLOR4(1, 0, 0, 0));
 
 	UINT chickenBloodBarWidth = UINT(80.0f*(mChickenBoss.GetHP() / mChickenBoss.GetInitialHealth()));
-	gRenderer.DrawRect(FLOAT2{ 0.3f,0.2f }, bloodBarWidth, 5, COLOR4(1, 1, 0, 0));
+	gRenderer.DrawRect(FLOAT2{ 0.4f,0.9f }, chickenBloodBarWidth *3, 30, COLOR4(1, 1, 0, 0));
 
 
 
 	UINT width = gRenderer.GetBufferwidth();
 	UINT height = gRenderer.GetBufferheight();
-	gRenderer.DrawLine({ 1.0f,1.0f,1.0f,1.0f }, width / 2 - 4, height / 2, width / 2 + 4, height / 2);
-	gRenderer.DrawLine({ 1.0f,1.0f,1.0f,1.0f }, width / 2, height / 2 - 4, width / 2, height / 2 + 4);
+	gRenderer.DrawLine({ 1.0f,1.0f,1.0f,1.0f }, width / 2 - 8, height / 2, width / 2 + 8, height / 2);
+	gRenderer.DrawLine({ 1.0f,1.0f,1.0f,1.0f }, width / 2, height / 2 - 8, width / 2, height / 2 + 8);
 	gRenderer.Present(ghwnd);
 }
 
@@ -181,7 +181,7 @@ void GamePlay::MainGame::mFunction_UpdateAndRender_GameOverMenu(BOOL hasWon)
 			gRootGameState = GameState::GS_StartMenu;
 			mMainGameState = GameState::MainGame::GS_Playing;
 			Sleep(300);
-			//bug? have to change mmaingamestate?
+
 		}
 	}
 	else

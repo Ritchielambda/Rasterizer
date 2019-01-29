@@ -62,6 +62,8 @@ public:
 	void		GetVertexBuffer(std::vector<Vertex>& outBuff);
 
 	void		ComputeBoundingBox(BOUNDINGBOX& outBox);
+
+	Texture2D* m_texture;
 private:
 	Matrix						mMatrixWorld;
 
@@ -86,7 +88,7 @@ private:
 
 	Material mMaterial;
 
-	Texture2D* m_texture;
+
 
 	std::vector<Vertex>* m_vertexbuffer;
 	std::vector<UINT>* m_indexbuffer;

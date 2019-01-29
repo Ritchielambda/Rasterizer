@@ -33,7 +33,7 @@ void GamePlay::Asteroid::Init(UINT AsteroidType)
 	mat.ambient = { 0.3f,0.3f,0.3f };
 	mat.diffuse = { 0.7f,0.7f,0.7f };
 	mMesh.SetMaterial(mat);
-
+	mMesh.Settexture(&mTexture);
 	mMesh.SetPosition(posDist(rndEngine), posDist(rndEngine), posDist(rndEngine));
 	mRotateSpeed = { rotSpeedDist(rndEngine),rotSpeedDist(rndEngine), rotSpeedDist(rndEngine) };
 	mMoveSpeed = { speedDist(rndEngine),speedDist(rndEngine), speedDist(rndEngine) };

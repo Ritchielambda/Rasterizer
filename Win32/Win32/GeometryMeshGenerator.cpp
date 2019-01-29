@@ -120,50 +120,67 @@ void GeometryMeshGenerator::CreateSphere(float fRadius, UINT iColumnCount, UINT 
 	//the TOP/BOTTOM vertex will be restored in the last 2 position in this array
 	//the first column will be duplicated to achieve adequate texture mapping
 
+	//iColunmCount : Slices of Columns (Cut up the ball Vertically)
+	//iRingCount: Slices of Horizontal Rings (Cut up the ball Horizontally)
+	//the "+2" refers to the TOP/BOTTOM vertex
+	//the TOP/BOTTOM vertex will be restored in the last 2 position in this array
+	//the first column will be duplicated to achieve adequate texture mapping
 	FLOAT3* tmpV;
 	FLOAT2* tmpTexCoord;
-	UINT tmpVertexCount = (iColumnCount + 1)*iRingCount + 2;
-	tmpV				= new FLOAT3[tmpVertexCount];
-	tmpTexCoord		= new FLOAT2[tmpVertexCount];
+	UINT tmpVertexCount = (iColumnCount + 1) * iRingCount + 2;
+	tmpV = new FLOAT3[tmpVertexCount];
 	tmpTexCoord = new FLOAT2[tmpVertexCount];
 	tmpV[tmpVertexCount - 2] = FLOAT3(FLOAT3(0, fRadius, 0));			//TOP vertex
 	tmpV[tmpVertexCount - 1] = FLOAT3(FLOAT3(0, -fRadius, 0));		//BOTTOM vertex
 	tmpTexCoord[tmpVertexCount - 2] = FLOAT2(0.5f, 0);			//TOP vertex
 	tmpTexCoord[tmpVertexCount - 1] = FLOAT2(0.5f, 1.0f);			//BOTTOM vertex
 
+
 #pragma region GenerateVertex
 
-	float tmpX, tmpY, tmpZ, tmpRingRadius;
-	//Calculate the Step length (步长)
-	float StepLength_AngleY = MathInterface::PI / (iRingCount + 1);//distance between each level(ring)
-	float StepLength_AngleXZ = 2 * MathInterface::PI/iColumnCount;//这个角度有点看不懂
-	
-	UINT k = 0;
+	float	tmpX, tmpY, tmpZ, tmpRingRadius;
 
+	//Calculate the Step length (步长)
+	float	StepLength_AngleY = PI / (iRingCount + 1); // distances between each level (ring)
+	float StepLength_AngleXZ = 2 * PI / iColumnCount;
+
+	UINT k = 0;//for iteration
+			   //start to iterate
 	for (UINT i = 0; i < iRingCount; i++)
 	{
 		//Generate Vertices ring By ring ( from top to down )
 		//the first column will be duplicated to achieve adequate texture mapping
 		for (UINT j = 0; j < iColumnCount + 1; j++)
 		{
-			tmpY = fRadius*sin(MathInterface::PI / 2 - (i + 1)*StepLength_AngleY);
-			//勾股
+			//the Y coord of  current ring 
+			tmpY = fRadius * sin(PI / 2 - (i + 1) *StepLength_AngleY);
+
+			////Pythagoras theorem(勾股定理)
 			tmpRingRadius = sqrtf(fRadius*fRadius - tmpY * tmpY);
 
+			////trigonometric function(三角函数)
 			tmpX = tmpRingRadius * cos(j*StepLength_AngleXZ);
+
+			//...
 			tmpZ = tmpRingRadius * sin(j*StepLength_AngleXZ);
+
+			//...
 			tmpV[k] = FLOAT3(tmpX, tmpY, tmpZ);
 
+			//map the i,j to closed interval [0,1] respectively , to proceed a spheric texture wrapping
 			tmpTexCoord[k] = FLOAT2((float)j / (iColumnCount), (float)i / (iRingCount - 1));
 
 			k++;
 		}
 	}
-	//add to memory
+
+
+	//add to Memory
 	Vertex tmpCompleteV;
-	for (UINT i = 0; i < tmpVertexCount; i++)
+	for (UINT i = 0; i<tmpVertexCount; i++)
 	{
-		tmpCompleteV.m_Position = QVector(tmpV[i].x, tmpV[i].y, tmpV[i].z,1.0f);
+
+		tmpCompleteV.m_Position = QVector(tmpV[i].x, tmpV[i].y, tmpV[i].z,1.0);
 		tmpCompleteV.m_Normal = FLOAT3(tmpV[i].x / fRadius, tmpV[i].y / fRadius, tmpV[i].z / fRadius);
 		tmpCompleteV.Color = QVector(tmpV[i].x / fRadius, tmpV[i].y / fRadius, tmpV[i].z / fRadius, 1.0f);
 		tmpCompleteV.m_UV = tmpTexCoord[i];
@@ -174,6 +191,8 @@ void GeometryMeshGenerator::CreateSphere(float fRadius, UINT iColumnCount, UINT 
 #pragma endregion GenerateVertex
 
 #pragma region GenerateIndices
+	//Generate Indices of a ball
+	//every Ring grows a triangle net with lower level ring
 	for (UINT i = 0; i<iRingCount - 1; i++)
 	{
 		for (UINT j = 0; j<iColumnCount; j++)
@@ -202,7 +221,8 @@ void GeometryMeshGenerator::CreateSphere(float fRadius, UINT iColumnCount, UINT 
 			outIndicesList.push_back((i + 1)*	(iColumnCount + 1) + j + 0);
 		}
 	}
-	
+
+
 	//deal with the TOP/BOTTOM
 
 	for (UINT j = 0; j<iColumnCount; j++)
@@ -217,7 +237,6 @@ void GeometryMeshGenerator::CreateSphere(float fRadius, UINT iColumnCount, UINT 
 	}
 
 #pragma endregion GenerateIndices
-
 
 
 }

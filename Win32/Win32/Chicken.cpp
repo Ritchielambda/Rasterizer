@@ -222,7 +222,7 @@ void GamePlay::ChickenMonster::mFunction_Fire(FLOAT3 shootDir)
 	case CHICKEN_ATTACK_STATE_ULTIMATE_EXPLODE:
 	{
 		shootDir.Normalize();
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 500; i++)
 		{
 			FLOAT3 dir = shootDir + FLOAT3(dirDist1(rndEngine), dirDist2(rndEngine), dirDist3(rndEngine));
 			dir.Normalize();

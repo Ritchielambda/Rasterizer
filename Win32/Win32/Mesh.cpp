@@ -23,7 +23,7 @@ Mesh::~Mesh()
 {
 	delete m_vertexbuffer;
 	delete m_indexbuffer;
-	if (m_texture) delete m_texture;
+	delete m_texture;
 }
 void Mesh::CreatePlane(float fWidth, float fDepth, UINT iRowCount, UINT iColumnCount)
 {
@@ -193,7 +193,7 @@ void Mesh::mFunction_UpdateWorldMatrix()
 	//ÐÞ¸ÄÆ½ÒÆÏî
 	tmpMatrix.m[3][0] = mPosition.x;
 	tmpMatrix.m[3][1] = mPosition.y;
-	tmpMatrix.m[3][3] = mPosition.z;
+	tmpMatrix.m[3][2] = mPosition.z;
 
 	mMatrixWorld = tmpMatrix;
 }

@@ -13,7 +13,7 @@ void GamePlay::SceneModelManager::Init(SCENE_TYPE model)
 	case SCENE_TYPE::SCENE_COSMOS1:
 		{
 		mSkyTexture.LoadBitmapToColorArray(L"Media/universe.BMP");
-		mSkyModel.CreateSphere(2000.0f, 20, 20, TRUE);
+		mSkyModel.CreateSphere(2000, 20, 20, TRUE);
 		for (UINT i = 0; i < c_asteroidCount; ++i)
 		{
 			mAsteroid[i].Init((i % 3));
@@ -23,7 +23,7 @@ void GamePlay::SceneModelManager::Init(SCENE_TYPE model)
 	{
 		mSkyTexture.LoadBitmapToColorArray(L"Media/checkerBoard.BMP");
 
-		mSkyModel.CreateSphere(2000, 20, 20, TRUE);
+		mSkyModel.CreateSphere(2000.0f, 20, 20, TRUE);
 		for (UINT i = 0; i < c_asteroidCount; ++i)
 		{
 			mAsteroid[i].Init(AsteroidType::AsteroidType_Box);
@@ -41,7 +41,7 @@ void GamePlay::SceneModelManager::Init(SCENE_TYPE model)
 	mSceneLight.mDiffuseColor = { 1.0f,1.0f,1.0f };
 	mSceneLight.mDiffuseIntensity = 1.0f;
 	mSceneLight.mDirection = { -1.0f,-1.0f,-1.0f };
-	mSceneLight.mIsEnabled = true;
+	mSceneLight.mIsEnabled = TRUE;
 	mSceneLight.mSpecularColor = { 1.0f,1.0f,1.0f };
 	mSceneLight.mSpecularIntensity = 1.2f;
 

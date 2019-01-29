@@ -62,12 +62,14 @@ namespace GamePlay
 	extern QRender				gRenderer;
 	extern ICamera				gCamera;
 	extern float					gTimeElapsed;
-//	extern QPlayer							gPlayer;
+	extern QPlayer							gPlayer;
 	extern 	MainGame				gMainGame;
 	extern UINT					gFPS;
 	extern HWND					ghwnd;
+	extern RECT					windowsrect;
+	//test object
 
-
+	extern Mesh				teapot;
 
 	void						InitGlobal();
 
@@ -100,3 +102,5 @@ LRESULT CALLBACK WndProc(HWND hWnd,	//Windows callback procedure
 	LPARAM lParam);
 
 extern LPCTSTR WndClassName;	//Define our window class name
+void InitializeRender();
+void drawpixeltest();

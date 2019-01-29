@@ -89,7 +89,7 @@ namespace MathInterface
 
 		QVector(float px, float py, float pz, float pw) :x(px), y(py), z(pz), w(pw) {}
 		QVector() = default;
-		QVector(const QVector & rhs) :x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w) {}
+		//QVector( QVector & rhs) :x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w) {}
 		QVector operator = (const QVector&rhs) { x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w; return *this; }
 		QVector operator*(const QVector&vec)const { return QVector(vec.x*x, vec.y*y, vec.z*z, vec.w*w); }
 		friend QVector operator*(float scaleFactor, const QVector& vec)
