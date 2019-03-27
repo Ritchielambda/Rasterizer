@@ -1,90 +1,164 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="Engine">
+      <UniqueIdentifier>{5faae28b-c616-4096-8106-9176ae60c8e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core">
+      <UniqueIdentifier>{e708da29-41f2-4064-b0db-61a6948df183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\FileLoader">
+      <UniqueIdentifier>{a48e5d13-841b-4c4f-b8da-51cfa10330b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Renderer">
+      <UniqueIdentifier>{765bd16f-6be7-4cd0-8c9d-6cd270f92717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scene">
+      <UniqueIdentifier>{153e4e20-1513-4ec1-b958-69805fe07388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="Game\MainGame">
+      <UniqueIdentifier>{48e12b58-d03f-4272-ae75-c1fde978e56b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="GameObj">
+    <Filter Include="Game\MainGame\GameObj">
       <UniqueIdentifier>{04be5af7-9e40-44e7-96d9-019ff990d509}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FileLoader">
-      <UniqueIdentifier>{a48e5d13-841b-4c4f-b8da-51cfa10330b4}</UniqueIdentifier>
+    <Filter Include="Game\MainGame\GameLogic">
+      <UniqueIdentifier>{e7e4fcb5-1901-4fce-8660-09afcb8e2a29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\MainGame\Menus">
+      <UniqueIdentifier>{7de13fea-5dd9-4cdc-b786-af11caccec30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="FileLoader.cpp">
+      <Filter>Engine\FileLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Rasterizer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="QTimer.cpp">
+      <Filter>Engine\Core</Filter>
     </ClCompile>
     <ClCompile Include="MathInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadBitmap.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Core</Filter>
     </ClCompile>
     <ClCompile Include="QRender.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="FileLoader.cpp">
-      <Filter>FileLoader</Filter>
+    <ClCompile Include="GeometryMeshGenerator.cpp">
+      <Filter>Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>GameObj</Filter>
+      <Filter>Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Base_GameObject.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletMgr.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Chicken.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus.cpp">
+      <Filter>Game\MainGame\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGameLogic.cpp">
+      <Filter>Game\MainGame\GameLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEnvironment.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCollection.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Engine\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Rasterizer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="FileLoader.h">
+      <Filter>Engine\FileLoader</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Asteroid.h">
+      <Filter>Game\MainGame\GameObj</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Chicken.h">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Game\MainGame\GameObj</Filter>
     </ClInclude>
     <ClInclude Include="MathInterface.h">
-      <Filter>Header Files</Filter>
+      <Filter>Engine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadBitmap.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="QTimer.h">
+      <Filter>Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="QRender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObjBase.h">
-      <Filter>GameObj</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>GameObj</Filter>
-    </ClInclude>
-    <ClInclude Include="FileLoader.h">
-      <Filter>FileLoader</Filter>
+      <Filter>Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="typedef.h">
-      <Filter>GameObj</Filter>
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Base_GameObject.h">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryMeshGenerator.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MyGameEngine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletMgr.h">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="PointCollection.h">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEnvironment.h">
+      <Filter>Game\MainGame\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGameLogic.h">
+      <Filter>Game\MainGame\GameLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus.h">
+      <Filter>Game\MainGame\Menus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
